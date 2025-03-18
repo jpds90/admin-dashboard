@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { useState } from "react";
-import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Notícias
-import NoticiaPage from "./pages/NoticiaPage"; // Página de Notícia
+import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Administração de Notícias
+import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma notícia
 
 // Componente Sidebar
 function Sidebar() {
@@ -59,11 +59,10 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/news" element={<AdminNoticias />} />
+              <Route path="/news/:id" element={<NoticiaPage />} /> {/* Rota para exibir uma notícia */}
               <Route path="/store" element={<h2 className='p-5'>Gerenciar Loja</h2>} />
               <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
               <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
-              {/* Rota para exibir detalhes de uma notícia */}
-              <Route path="/noticias/:id" element={<NoticiaPage />} />
             </Routes>
           </div>
         </div>
