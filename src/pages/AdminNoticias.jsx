@@ -1,27 +1,28 @@
-import { useState } from 'react';
+import { useState } from "react";
+import UploadImage from "../components/UploadImage"; // Importando o componente
 
 export default function AdminNoticias() {
-  const [titulo, setTitulo] = useState('');
-  const [conteudo, setConteudo] = useState('');
-  const [imagemUrl, setImagemUrl] = useState('');
-  const [mensagem, setMensagem] = useState('');
+  const [titulo, setTitulo] = useState("");
+  const [conteudo, setConteudo] = useState("");
+  const [imagemUrl, setImagemUrl] = useState(""); // Estado para armazenar a URL da imagem
+  const [mensagem, setMensagem] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('https://backendsafor.onrender.com/noticias', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("https://backendsafor.onrender.com/noticias", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ titulo, conteudo, imagem_url: imagemUrl }),
     });
 
     if (response.ok) {
-      setMensagem('Notícia cadastrada com sucesso!');
-      setTitulo('');
-      setConteudo('');
-      setImagemUrl('');
+      setMensagem("Notícia cadastrada com sucesso!");
+      setTitulo("");
+      setConteudo("");
+      setImagemUrl("");
     } else {
-      setMensagem('Erro ao cadastrar notícia.');
+      setMensagem("Erro ao cadastrar notícia.");
     }
   };
 
@@ -45,13 +46,12 @@ export default function AdminNoticias() {
           className="w-full p-2 border border-gray-300 rounded"
           required
         />
-        <input
-          type="text"
-          placeholder="URL da Imagem (opcional)"
-          value={imagemUrl}
-          onChange={(e) => setImagemUrl(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
-        />
+        
+        {/* Componente de Upload */}
+        <UploadImage setImagemUrl={setImagemUrl} />
+        
+        {imagemUrl && <img src={imagemUrl} alt="Pré-visualização" className="mt-2 w-40 rounded" />}
+
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
           Cadastrar
         </button>
