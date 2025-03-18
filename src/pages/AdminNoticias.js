@@ -35,14 +35,14 @@ export default function AdminNoticias() {
           placeholder="Título"
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
-          className="w-full p-2 border"
+          className="w-full p-2 border border-gray-300 rounded"
           required
         />
         <textarea
           placeholder="Conteúdo"
           value={conteudo}
           onChange={(e) => setConteudo(e.target.value)}
-          className="w-full p-2 border"
+          className="w-full p-2 border border-gray-300 rounded"
           required
         />
         <input
@@ -50,9 +50,9 @@ export default function AdminNoticias() {
           placeholder="URL da Imagem (opcional)"
           value={imagemUrl}
           onChange={(e) => setImagemUrl(e.target.value)}
-          className="w-full p-2 border"
+          className="w-full p-2 border border-gray-300 rounded"
         />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
           Cadastrar
         </button>
       </form>
