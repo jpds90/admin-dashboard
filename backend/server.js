@@ -100,23 +100,31 @@ app.delete('/noticias/:id', async (req, res) => {
     }
 });
 
+// Rota para upload de imagem no Cloudinary
 app.post("/upload", upload.single("imagem"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "Nenhuma imagem enviada" });
-    }
+    cloudinary.uploader.upload_stream(
+      { folder: "saforgandia" },
+      async (error, result) => {
+        if (error) return res.status(500).json({ error: "Erro no upload" });
 
-    cloudinary.uploader.upload_stream({ folder: "saforgandia" }, async (error, result) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Erro no upload" });
+        // Criar imagens redimensionadas
+        const imageLarge = cloudinary.url(result.public_id, { width: 802, height: 461, crop: "fill" });
+        const imageSmall = cloudinary.url(result.public_id, { width: 351, height: 197, crop: "fill" });
+
+        // Salvar as URLs no banco de dados
+        await pool.query(
+          "INSERT INTO saforgandia_imagens (original_url, large_url, small_url) VALUES ($1, $2, $3)",
+          [result.secure_url, imageLarge, imageSmall]
+        );
+
+        res.json({
+          original: result.secure_url,
+          large: imageLarge,
+          small: imageSmall
+        });
       }
-
-      // Salva a URL no banco
-      await pool.query("INSERT INTO saforgandia_imagens (url) VALUES ($1)", [result.secure_url]);
-
-      res.json({ imageUrl: result.secure_url });
-    }).end(req.file.buffer);
+    ).end(req.file.buffer);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erro ao processar imagem" });
