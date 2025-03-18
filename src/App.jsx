@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { useState } from "react";
 import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Administração de Notícias
 import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma notícia
+import Translate from "./components/Translate";
 
 // Componente Sidebar
 function Sidebar() {
@@ -45,6 +46,7 @@ export default function App() {
   return (
     <Router>
       <div className="flex flex-col h-screen">
+        <Translate /> {/* Adiciona o seletor de idioma */}
         {/* Cabeçalho */}
         <Header />
         
