@@ -5,6 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saforgandia FC</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+        header {
+            background-color: #003DA5;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        #destaques {
+            background: url('banner.jpg') no-repeat center center;
+            background-size: cover;
+            text-align: center;
+            color: white;
+            padding: 100px 0;
+        }
+        #destaques h2 {
+            font-size: 3em;
+        }
+        #noticias .noticia {
+            background-color: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #noticias .noticia img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        footer {
+            background-color: #003DA5;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5em;
+            }
+            #destaques h2 {
+                font-size: 2em;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -21,9 +86,6 @@
             </ul>
         </nav>
     </header>
-
-    <!-- Seletor de idiomas -->
-    <div id="google_translate_element"></div>
 
     <section id="destaques">
         <div class="banner">
@@ -52,7 +114,8 @@
         <p>&copy; 2025 Saforgandia FC - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- Script do Google Translate -->
+    <div id="google_translate_element"></div>
+
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
