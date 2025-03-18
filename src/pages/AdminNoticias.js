@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
  
  export default function AdminNoticias() {
    const [titulo, setTitulo] = useState('');
@@ -28,7 +28,10 @@ import { useState } from 'react';
 return (
   <>
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Cadastrar Notícia</h1>
+      <h1 className="text-xl font-bold mb-4">
+  Cadastrar Notícia
+</h1>
+
       {mensagem && <p className="text-green-600">{mensagem}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
