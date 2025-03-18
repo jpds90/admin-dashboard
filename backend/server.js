@@ -1,7 +1,6 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-
 dotenv = require('dotenv');
 dotenv.config();
 
@@ -11,9 +10,7 @@ const port = process.env.PORT || 3000;
 // Configuração do banco de dados
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    ssl: { rejectUnauthorized: false }
 });
 
 app.use(cors());
@@ -23,10 +20,15 @@ app.use(express.json());
 app.post('/noticias', async (req, res) => {
     const { titulo, conteudo, imagem_url } = req.body;
     try {
+        if (!titulo || !conteudo) {
+            return res.status(400).json({ error: 'Título e conteúdo são obrigatórios' });
+        }
+
         const result = await pool.query(
             'INSERT INTO saforgandia_noticias (titulo, conteudo, imagem_url) VALUES ($1, $2, $3) RETURNING *',
             [titulo, conteudo, imagem_url]
         );
+
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error(error);
@@ -94,6 +96,7 @@ app.delete('/noticias/:id', async (req, res) => {
     }
 });
 
+// Iniciar o servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
