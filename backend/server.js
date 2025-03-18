@@ -3,7 +3,11 @@ const { Pool } = require('pg');
 const cors = require('cors');
 dotenv = require('dotenv');
 dotenv.config();
+const multer = require("multer");
+const cloudinary = require("./cloudinaryConfig");
 
+
+const upload = multer({ storage: multer.memoryStorage() });
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -95,6 +99,21 @@ app.delete('/noticias/:id', async (req, res) => {
         res.status(500).json({ error: 'Erro ao deletar notícia' });
     }
 });
+
+app.post("/upload", upload.single("imagem"), async (req, res) => {
+  try {
+    const result = await cloudinary.uploader.upload_stream(
+      { folder: "saforgandia" }, // Define uma pasta no Cloudinary
+      (error, result) => {
+        if (error) return res.status(500).json({ error: "Erro ao fazer upload" });
+        res.json({ imageUrl: result.secure_url });
+      }
+    ).end(req.file.buffer);
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao processar imagem" });
+  }
+});
+
 
 // Iniciar o servidor
 app.listen(port, () => {
