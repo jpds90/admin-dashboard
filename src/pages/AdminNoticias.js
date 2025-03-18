@@ -25,37 +25,40 @@ import { useState } from 'react';
      }
    };
  
-   return (
-     <div className="p-4">
-       <h1 className="text-xl font-bold mb-4">Cadastrar Notícia</h1>
-       {mensagem && <p className="text-green-600">{mensagem}</p>}
-       <form onSubmit={handleSubmit} className="space-y-4">
-         <input
-           type="text"
-           placeholder="Título"
-           value={titulo}
-           onChange={(e) => setTitulo(e.target.value)}
-           className="w-full p-2 border"
-           required
-         />
-         <textarea
-           placeholder="Conteúdo"
-           value={conteudo}
-           onChange={(e) => setConteudo(e.target.value)}
-           className="w-full p-2 border"
-           required
-         />
-         <input
-           type="text"
-           placeholder="URL da Imagem (opcional)"
-           value={imagemUrl}
-           onChange={(e) => setImagemUrl(e.target.value)}
-           className="w-full p-2 border"
-         />
-         <button type="submit" className="bg-blue-500 text-white px-4 py-2">
-           Cadastrar
-         </button>
-       </form>
-     </div>
-   );
+return (
+  <>
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Cadastrar Notícia</h1>
+      {mensagem && <p className="text-green-600">{mensagem}</p>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          placeholder="Título"
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+          className="w-full p-2 border"
+          required
+        />
+        <textarea
+          placeholder="Conteúdo"
+          value={conteudo}
+          onChange={(e) => setConteudo(e.target.value)}
+          className="w-full p-2 border"
+          required
+        />
+        <input
+          type="text"
+          placeholder="URL da Imagem (opcional)"
+          value={imagemUrl}
+          onChange={(e) => setImagemUrl(e.target.value)}
+          className="w-full p-2 border"
+        />
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+          Cadastrar
+        </button>
+      </form>
+    </div>
+  </>
+);
+
  }
