@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import { useState } from 'react';
 
 export default function AdminNoticias() {
   const [titulo, setTitulo] = useState('');
@@ -14,7 +13,6 @@ export default function AdminNoticias() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ titulo, conteudo, imagem_url: imagemUrl }),
-
     });
 
     if (response.ok) {
