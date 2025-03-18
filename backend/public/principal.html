@@ -43,14 +43,29 @@
         #destaques h2 {
             font-size: 3em;
         }
-        #noticias .noticia {
+        #noticias {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        #noticias h2 {
+            text-align: center;
+        }
+        #noticias-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .noticia {
             background-color: white;
             padding: 20px;
             margin: 10px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 280px;
+            text-align: center;
         }
-        #noticias .noticia img {
+        .noticia img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
@@ -67,6 +82,10 @@
             }
             #destaques h2 {
                 font-size: 2em;
+            }
+            #noticias-container {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -96,17 +115,8 @@
 
     <section id="noticias">
         <h2>Últimas Notícias</h2>
-        <div class="noticia">
-            <img src="imagem1.jpg" alt="Notícia 1">
-            <h3>Título da Notícia</h3>
-            <p>Resumo da notícia...</p>
-            <a href="noticia.html">Leia mais</a>
-        </div>
-        <div class="noticia">
-            <img src="imagem2.jpg" alt="Notícia 2">
-            <h3>Título da Notícia</h3>
-            <p>Resumo da notícia...</p>
-            <a href="noticia.html">Leia mais</a>
+        <div id="noticias-container">
+            <p>Carregando notícias...</p>
         </div>
     </section>
 
@@ -114,16 +124,40 @@
         <p>&copy; 2025 Saforgandia FC - Todos os direitos reservados.</p>
     </footer>
 
-    <div id="google_translate_element"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            try {
+                const response = await fetch("/noticias"); // Faz a requisição para o backend
+                const noticias = await response.json(); // Converte para JSON
+                
+                const noticiasContainer = document.getElementById("noticias-container");
+                noticiasContainer.innerHTML = ""; // Limpa o conteúdo antes de adicionar novas notícias
 
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'pt',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-        }
+                if (noticias.length === 0) {
+                    noticiasContainer.innerHTML = "<p>Nenhuma notícia disponível.</p>";
+                    return;
+                }
+
+                noticias.forEach(noticia => {
+                    const noticiaElement = document.createElement("div");
+                    noticiaElement.classList.add("noticia");
+
+                    noticiaElement.innerHTML = `
+                        <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
+                        <h3>${noticia.titulo}</h3>
+                        <p>${noticia.conteudo.substring(0, 100)}...</p>
+                        <a href="noticia.html?id=${noticia.id}">Leia mais</a>
+                    `;
+
+                    noticiasContainer.appendChild(noticiaElement);
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar notícias:", error);
+                document.getElementById("noticias-container").innerHTML = "<p>Erro ao carregar notícias.</p>";
+            }
+        });
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
