@@ -62,7 +62,7 @@ export default function App() {
               <Route path="/store" element={<h2 className='p-5'>Gerenciar Loja</h2>} />
               <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
               <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
-              <Route path="/noticias/:id" element={<NoticiaPage />} />
+              <Route path="/noticias/:id" element={<NoticiaPage />} /> {/* Rota para a página de Notícia */}
             </Routes>
           </div>
         </div>
