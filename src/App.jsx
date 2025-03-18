@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import { useState } from "react";
+import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Notícias
 
 // Componente Sidebar
 function Sidebar() {
@@ -33,25 +34,9 @@ function Header() {
   );
 }
 
-// Páginas do Painel
+// Página principal do Dashboard
 function Dashboard() {
   return <h2 className="p-5">Bem-vindo ao painel de administração</h2>;
-}
-
-function News() {
-  return <h2 className="p-5">Gerenciar Notícias</h2>;
-}
-
-function Store() {
-  return <h2 className="p-5">Gerenciar Loja</h2>;
-}
-
-function Matches() {
-  return <h2 className="p-5">Gerenciar Jogos</h2>;
-}
-
-function Players() {
-  return <h2 className="p-5">Gerenciar Jogadores</h2>;
 }
 
 // Componente principal App
@@ -72,10 +57,10 @@ export default function App() {
           <div className="flex-1 p-5 overflow-auto">
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/store" element={<Store />} />
-              <Route path="/matches" element={<Matches />} />
-              <Route path="/players" element={<Players />} />
+              <Route path="/news" element={<AdminNoticias />} />
+              <Route path="/store" element={<h2 className='p-5'>Gerenciar Loja</h2>} />
+              <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
+              <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
             </Routes>
           </div>
         </div>
