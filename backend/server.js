@@ -17,7 +17,10 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
+
 app.use(express.json());
 
 // Criar uma nova notícia
