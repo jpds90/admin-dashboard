@@ -102,16 +102,31 @@ app.delete('/noticias/:id', async (req, res) => {
 
 app.post("/upload", upload.single("imagem"), async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload_stream(
-      { folder: "saforgandia" }, // Define uma pasta no Cloudinary
-      (error, result) => {
-        if (error) return res.status(500).json({ error: "Erro ao fazer upload" });
-        res.json({ imageUrl: result.secure_url });
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhuma imagem enviada" });
+    }
+
+    cloudinary.uploader.upload_stream({ folder: "saforgandia" }, async (error, result) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro no upload" });
       }
-    ).end(req.file.buffer);
+
+      // Salva a URL no banco
+      await pool.query("INSERT INTO saforgandia_imagens (url) VALUES ($1)", [result.secure_url]);
+
+      res.json({ imageUrl: result.secure_url });
+    }).end(req.file.buffer);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Erro ao processar imagem" });
   }
+});
+
+
+app.get("/imagens", async (req, res) => {
+  const result = await pool.query("SELECT url FROM saforgandia_imagens");
+  res.json(result.rows);
 });
 
 
