@@ -5,9 +5,20 @@ const cors = require("cors");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
+// Servir arquivos estáticos da pasta "public"
+app.use(express.static(path.join(__dirname, "public")));
+
+// Rota para a página inicial
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "principal.html"));
+});
+
 
 // Configuração do CORS
 app.use(cors({ origin: "*" }));
