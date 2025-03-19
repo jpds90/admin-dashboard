@@ -187,7 +187,33 @@ app.get("/api/logo", async (req, res) => {
   }
 });
 
+// 📸 Upload de banners para o Cloudinary
+app.post("/upload-banners", upload.single("banners"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhuma Banners enviada" });
+    }
 
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "saforgandia/banners",
+    });
+
+    const banners_url = cloudinary.url(uploadResult.public_id, { width: 993, height: 558, crop: "fill" });
+
+    await pool.query(
+      "INSERT INTO saforgandia_banners (banners_url) VALUES ($1) RETURNING *",
+      [banners_url]
+    );
+
+    fs.unlinkSync(req.file.path);
+
+    res.json({ banners: banners_url });
+
+  } catch (error) {
+    console.error("Erro no upload da Banners:", error);
+    res.status(500).json({ error: "Erro ao processar o upload da Banners" });
+  }
+});
 
 // 🚀 Iniciar o servidor
 app.listen(port, () => {
