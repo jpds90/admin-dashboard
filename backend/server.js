@@ -39,40 +39,44 @@ cloudinary.config({
 });
 
 // 🚀 Criar uma nova notícia
-app.post('/noticias', upload.single("imagem"), async (req, res) => {
+app.post('/noticias', async (req, res) => {
   const { titulo, conteudo } = req.body;
-  let imagem_url = null, imagem_large = null, imagem_small = null;
 
   try {
     if (!titulo || !conteudo) {
       return res.status(400).json({ error: 'Título e conteúdo são obrigatórios' });
     }
 
-    if (req.file) {
-      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-        folder: "saforgandia",
-      });
+    // 🖼️ Buscar a última imagem cadastrada na tabela de imagens
+    const imagemResult = await pool.query(
+      "SELECT original_url, large_url, small_url FROM saforgandia_imagens ORDER BY id DESC LIMIT 1"
+    );
 
-      imagem_url = uploadResult.secure_url;
-      imagem_large = cloudinary.url(uploadResult.public_id, { width: 802, height: 461, crop: "fill" });
-      imagem_small = cloudinary.url(uploadResult.public_id, { width: 351, height: 197, crop: "fill" });
+    let imagem_url = null;
+    let imagem_large = null;
+    let imagem_small = null;
 
-      fs.unlinkSync(req.file.path);
+    if (imagemResult.rows.length > 0) {
+      imagem_url = imagemResult.rows[0].original_url;
+      imagem_large = imagemResult.rows[0].large_url;
+      imagem_small = imagemResult.rows[0].small_url;
     }
 
-    const queryResult = await pool.query(
+    // 📰 Inserir a notícia com as imagens da última inserção
+    const result = await pool.query(
       `INSERT INTO saforgandia_noticias (titulo, conteudo, imagem_url, imagem_large, imagem_small) 
        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       [titulo, conteudo, imagem_url, imagem_large, imagem_small]
     );
 
-    res.status(201).json({ message: 'Notícia criada com sucesso', noticia: queryResult.rows[0] });
+    res.status(201).json({ message: 'Notícia criada com sucesso', noticia: result.rows[0] });
 
   } catch (error) {
     console.error("Erro ao criar notícia:", error);
     res.status(500).json({ error: 'Erro ao criar notícia' });
   }
 });
+
 
 // 📜 Listar todas as notícias
 app.get('/noticias', async (req, res) => {
@@ -157,37 +161,6 @@ app.delete('/noticias/:id', async (req, res) => {
 });
 
 // 📸 Upload de imagem no Cloudinary
-app.post("/uploadoriginal", upload.single("imagem"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: "Nenhuma imagem enviada" });
-    }
-
-    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-      folder: "saforgandia",
-    });
-
-    const imagem_large = cloudinary.url(uploadResult.public_id, { width: 802, height: 461, crop: "fill" });
-    const imagem_small = cloudinary.url(uploadResult.public_id, { width: 351, height: 197, crop: "fill" });
-
-    await pool.query(
-      "INSERT INTO saforgandia_imagens (original_url, large_url, small_url) VALUES ($1, $2, $3)",
-      [uploadResult.secure_url, imagem_large, imagem_small]
-    );
-
-    fs.unlinkSync(req.file.path);
-
-    res.json({ original: uploadResult.secure_url, large: imagem_large, small: imagem_small });
-
-  } catch (error) {
-    console.error("Erro no upload:", error);
-    res.status(500).json({ error: "Erro ao processar imagem" });
-  }
-});
-
-
-
-
 app.post("/upload", upload.single("imagem"), async (req, res) => {
   try {
     if (!req.file) {
@@ -201,15 +174,8 @@ app.post("/upload", upload.single("imagem"), async (req, res) => {
     const imagem_large = cloudinary.url(uploadResult.public_id, { width: 802, height: 461, crop: "fill" });
     const imagem_small = cloudinary.url(uploadResult.public_id, { width: 351, height: 197, crop: "fill" });
 
-    // Salva na tabela saforgandia_imagens
     await pool.query(
       "INSERT INTO saforgandia_imagens (original_url, large_url, small_url) VALUES ($1, $2, $3)",
-      [uploadResult.secure_url, imagem_large, imagem_small]
-    );
-
-    // Salva na tabela saforgandia_noticias
-    await pool.query(
-      "INSERT INTO saforgandia_noticias (imagem_url, imagem_large, imagem_small) VALUES ($1, $2, $3)",
       [uploadResult.secure_url, imagem_large, imagem_small]
     );
 
@@ -222,6 +188,10 @@ app.post("/upload", upload.single("imagem"), async (req, res) => {
     res.status(500).json({ error: "Erro ao processar imagem" });
   }
 });
+
+
+
+
 
 
 
