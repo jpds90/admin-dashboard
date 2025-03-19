@@ -3,6 +3,7 @@ import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Ad
 import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma notícia
 import Translate from "./components/Translate";
 import AdminLogo from "./pages/AdminLogo"; // Importe o componente correto
+import AdminLogo from "./pages/AdminBanners"; // Importe o componente correto
 import { useState } from "react";
 
 // Componente Sidebar
@@ -25,6 +26,9 @@ function Sidebar() {
         </li>
         <li className="mb-2 hover:bg-gray-700 p-2 rounded">
           <Link to="/upload-logo">Upload de Logo</Link>
+        </li>
+        <li className="mb-2 hover:bg-gray-700 p-2 rounded">
+          <Link to="/upload-banners">Upload de Banners</Link>
         </li>
       </ul>
     </div>
@@ -70,6 +74,7 @@ export default function App() {
               <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
               <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
               <Route path="/upload-logo" element={<AdminLogo />} /> {/* Nova rota adicionada */}
+              <Route path="/upload-banners" element={<AdminBanners />} /> {/* Nova rota adicionada */}
             </Routes>
           </div>
         </div>
