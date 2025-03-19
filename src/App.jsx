@@ -3,6 +3,8 @@ import { useState } from "react";
 import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Administração de Notícias
 import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma notícia
 import Translate from "./components/Translate";
+import AdminLogo from "./pages/AdminLogo"; // Importe o componente correto
+
 
 // Componente Sidebar
 function Sidebar() {
