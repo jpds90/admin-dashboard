@@ -192,22 +192,22 @@ app.post("/upload", upload.single("imagem"), async (req, res) => {
 
 app.post("/upload-logo", upload.single("logo"), async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: "Nenhuma logo enviada" });
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhuma logo enviada" });
+    }
 
-const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-  folder: "saforgandia/logos",
-  width: 200, // Largura fixa
-  height: 200, // Altura fixa
-  crop: "fill", // Garante que a imagem preencha o tamanho especificado
-  gravity: "center", // Centraliza a imagem no corte
-});
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "saforgandia/logos", // Subpasta específica
+    });
 
+    const logo_url = cloudinary.url(uploadResult.public_id, { width: 200, height: 200, crop: "fill" });
 
-    const logo_url = uploadResult.secure_url; // Pegamos a URL segura do Cloudinary
+    await pool.query(
+      "INSERT INTO saforgandia_logos (logo_url) VALUES ($1) RETURNING *",
+      [logo_url]
+    );
 
-    await pool.query("INSERT INTO saforgandia_logos (logo_url) VALUES ($1)", [logo_url]);
-
-    fs.unlinkSync(req.file.path); // Remove o arquivo temporário
+    fs.unlinkSync(req.file.path); // Remove o arquivo temporário após o upload
 
     res.json({ logo: logo_url });
 
@@ -216,6 +216,7 @@ const uploadResult = await cloudinary.uploader.upload(req.file.path, {
     res.status(500).json({ error: "Erro ao processar o upload da logo" });
   }
 });
+
 
 
 app.get("/logo", async (req, res) => {
