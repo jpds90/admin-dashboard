@@ -3,7 +3,7 @@ import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Ad
 import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma notícia
 import Translate from "./components/Translate";
 import AdminLogo from "./pages/AdminLogo"; // Importe o componente correto
-import AdminLogo from "./pages/AdminBanners"; // Importe o componente correto
+import AdminBanners from "./pages/AdminBanners"; // Importe o componente correto
 import { useState } from "react";
 
 // Componente Sidebar
