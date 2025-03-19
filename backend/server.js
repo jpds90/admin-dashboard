@@ -17,6 +17,12 @@ app.use(express.json());
 // Servir arquivos estáticos da pasta "public"
 app.use(express.static(path.join(__dirname, "public")));
 
+// Página inicial
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "principal.html"));
+});
+
+
 // 📌 Configuração do PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
