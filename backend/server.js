@@ -135,7 +135,7 @@ app.post("/upload-logo", upload.single("logo"), async (req, res) => {
       folder: "saforgandia/logos",
     });
 
-    const logo_url = cloudinary.url(uploadResult.public_id, { width: 200, height: 200, crop: "fill" });
+    const logo_url = cloudinary.url(uploadResult.public_id, { width: 40, height: 40, crop: "fill" });
 
     await pool.query(
       "INSERT INTO saforgandia_logos (logo_url) VALUES ($1) RETURNING *",
