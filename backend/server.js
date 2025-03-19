@@ -215,6 +215,24 @@ app.post("/upload-banners", upload.single("banners"), async (req, res) => {
   }
 });
 
+app.get("/api/banners", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT banners_url FROM saforgandia_banners ORDER BY created_at DESC"
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Nenhum banner encontrado" });
+    }
+
+    res.json(result.rows); // Retorna todos os banners como array
+  } catch (error) {
+    console.error("Erro ao buscar banners:", error);
+    res.status(500).json({ error: "Erro ao buscar banners" });
+  }
+});
+
+
 // 🚀 Iniciar o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
