@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notícia - Saforgandia FC</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+        header {
+            background-color: #003DA5;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .noticia img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .noticia h2 {
+            font-size: 24px;
+            color: #333;
+        }
+        .noticia p {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .voltar {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #003DA5;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .voltar:hover {
+            background-color: #002d7a;
+        }
+        footer {
+            background-color: #003DA5;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Saforgandia FC</h1>
+    <nav>
+        <ul>
+            <li><a href="principal.html">Início</a></li>
+            <li><a href="principal.html#noticias">Notícias</a></li>
+            <li><a href="#">Agenda</a></li>
+            <li><a href="#">Loja</a></li>
+            <li><a href="#">Clube</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <div id="noticia" class="noticia">
+        <h2>Carregando notícia...</h2>
+    </div>
+    <a href="principal.html" class="voltar">← Voltar</a>
+</div>
+
+<footer>
+    <p>&copy; 2025 Saforgandia FC - Todos os direitos reservados.</p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        // Obtém o ID da notícia da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const noticiaId = urlParams.get("id");
+
+        if (!noticiaId) {
+            document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
+            return;
+        }
+
+        try {
+            // Faz a requisição para obter os detalhes da notícia
+            const response = await fetch(`/noticias/${noticiaId}`);
+            const noticia = await response.json();
+
+            if (noticia.error) {
+                document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
+                return;
+            }
+
+            // Preenche a página com os dados da notícia
+            document.getElementById("noticia").innerHTML = `
+                <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
+                <h2>${noticia.titulo}</h2>
+                <p>${noticia.conteudo}</p>
+            `;
+        } catch (error) {
+            console.error("Erro ao carregar notícia:", error);
+            document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
+        }
+    });
+</script>
+
+</body>
+</html>
