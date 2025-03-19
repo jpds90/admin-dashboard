@@ -157,7 +157,7 @@ app.delete('/noticias/:id', async (req, res) => {
 });
 
 // 📸 Upload de imagem no Cloudinary
-app.post("/upload", upload.single("imagem"), async (req, res) => {
+app.post("/uploadoriginal", upload.single("imagem"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "Nenhuma imagem enviada" });
@@ -184,6 +184,51 @@ app.post("/upload", upload.single("imagem"), async (req, res) => {
     res.status(500).json({ error: "Erro ao processar imagem" });
   }
 });
+
+
+
+
+app.post("/upload", upload.single("imagem"), async (req, res) => {
+  try {
+    const { titulo, conteudo } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhuma imagem enviada" });
+    }
+
+    if (!titulo || !conteudo) {
+      return res.status(400).json({ error: "Título e conteúdo são obrigatórios" });
+    }
+
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "saforgandia",
+    });
+
+    const imagem_large = cloudinary.url(uploadResult.public_id, { width: 802, height: 461, crop: "fill" });
+    const imagem_small = cloudinary.url(uploadResult.public_id, { width: 351, height: 197, crop: "fill" });
+
+    // Salva a notícia diretamente na tabela saforgandia_noticias com a imagem
+    const noticiaResult = await pool.query(
+      `INSERT INTO saforgandia_noticias (titulo, conteudo, imagem_url, imagem_large, imagem_small, data_publicacao) 
+       VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *`,
+      [titulo, conteudo, uploadResult.secure_url, imagem_large, imagem_small]
+    );
+
+    fs.unlinkSync(req.file.path);
+
+    res.status(201).json({
+      message: "Notícia criada com sucesso",
+      noticia: noticiaResult.rows[0],
+    });
+
+  } catch (error) {
+    console.error("Erro no upload e criação da notícia:", error);
+    res.status(500).json({ error: "Erro ao processar imagem e criar notícia" });
+  }
+});
+
+
+
 
 // 🚀 Iniciar o servidor
 app.listen(port, () => {
