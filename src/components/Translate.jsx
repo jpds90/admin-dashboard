@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ChevronUp } from "lucide-react"; // Ícone para a seta
 
 const Translate = () => {
     const [selectedLang, setSelectedLang] = useState("pt");
@@ -29,25 +30,24 @@ const Translate = () => {
     };
 
     return (
-        <div className="bg-green-100 text-green-600 px-4 py-2 rounded-xl shadow-md flex items-center gap-2">
-            <span className="font-bold">🌍</span>
-            {[
-                { code: "pt", label: "PT" },
-                { code: "en", label: "EN" },
-                { code: "es", label: "ES" },
-                { code: "fr", label: "FR" }
-            ].map((lang) => (
-                <button
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code)}
-                    className={`px-2 py-1 rounded ${
-                        selectedLang === lang.code ? "bg-green-300 font-bold" : ""
-                    }`}
-                >
-                    {lang.label}
-                </button>
-            ))}
+        <div className="relative">
+            <button className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded-2xl shadow-md gap-2">
+                <span className="text-xl">🈯</span>
+                <span className="font-semibold">{selectedLang.toUpperCase()}</span>
+                <ChevronUp size={16} />
+            </button>
             <div id="google_translate_element" className="hidden"></div>
+            <div className="absolute top-14 left-0 bg-white shadow-lg rounded-md p-2 hidden">
+                {["pt", "en", "es", "fr"].map((lang) => (
+                    <button
+                        key={lang}
+                        onClick={() => changeLanguage(lang)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                        {lang.toUpperCase()}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };
