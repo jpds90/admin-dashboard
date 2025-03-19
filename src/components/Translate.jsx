@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 
 const Translate = () => {
     const [selectedLang, setSelectedLang] = useState("pt");
+    const [isOpen, setIsOpen] = useState(false);
 
-    // Adiciona o script do Google Translate na página
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
@@ -18,7 +19,6 @@ const Translate = () => {
         };
     }, []);
 
-    // Função para trocar idioma sem abrir o seletor do Google
     const changeLanguage = (langCode) => {
         setSelectedLang(langCode);
         const googleFrame = document.querySelector(".goog-te-combo");
@@ -26,27 +26,41 @@ const Translate = () => {
             googleFrame.value = langCode;
             googleFrame.dispatchEvent(new Event("change"));
         }
+        setIsOpen(false);
     };
 
+    const languages = [
+        { code: "pt", label: "PT" },
+        { code: "en", label: "EN" },
+        { code: "es", label: "ES" },
+        { code: "fr", label: "FR" }
+    ];
+
     return (
-        <div className="bg-green-100 text-green-600 px-4 py-2 rounded-xl shadow-md flex items-center gap-2">
-            <span className="font-bold">🌍</span>
-            {[
-                { code: "pt", label: "PT" },
-                { code: "en", label: "EN" },
-                { code: "es", label: "ES" },
-                { code: "fr", label: "FR" }
-            ].map((lang) => (
-                <button
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code)}
-                    className={`px-2 py-1 rounded ${
-                        selectedLang === lang.code ? "bg-green-300 font-bold" : ""
-                    }`}
-                >
-                    {lang.label}
-                </button>
-            ))}
+        <div className="relative inline-block text-left">
+            <button 
+                onClick={() => setIsOpen(!isOpen)}
+                className="bg-blue-100 text-blue-600 px-4 py-2 rounded-xl shadow-md flex items-center gap-2"
+            >
+                <span className="font-bold">🌍 {languages.find(lang => lang.code === selectedLang)?.label}</span>
+                <ChevronDown size={16} />
+            </button>
+            
+            {isOpen && (
+                <div className="absolute mt-2 w-24 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                    {languages.map((lang) => (
+                        <button
+                            key={lang.code}
+                            onClick={() => changeLanguage(lang.code)}
+                            className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
+                                selectedLang === lang.code ? "font-bold bg-gray-200" : ""
+                            }`}
+                        >
+                            {lang.label}
+                        </button>
+                    ))}
+                </div>
+            )}
             <div id="google_translate_element" className="hidden"></div>
         </div>
     );
