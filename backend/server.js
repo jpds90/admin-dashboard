@@ -87,23 +87,51 @@ app.get('/noticias/:id', async (req, res) => {
 });
 
 // ✏️ Atualizar uma notícia
-app.put('/noticias/:id', async (req, res) => {
+app.put('/noticias/:id', upload.single("imagem"), async (req, res) => {
   const { id } = req.params;
-  const { titulo, conteudo, imagem_url } = req.body;
+  const { titulo, conteudo } = req.body;
+  let imagem_url, imageLarge, imageSmall;
+
   try {
+    // Verifica se foi enviado um arquivo de imagem
+    if (req.file) {
+      // Faz upload para o Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "saforgandia",
+      });
+
+      // Gera versões redimensionadas
+      imagem_url = result.secure_url;
+      imageLarge = cloudinary.url(result.public_id, { width: 802, height: 461, crop: "fill" });
+      imageSmall = cloudinary.url(result.public_id, { width: 351, height: 197, crop: "fill" });
+
+      // Remove o arquivo temporário
+      fs.unlinkSync(req.file.path);
+    }
+
+    // Atualiza os dados da notícia no banco
     const result = await pool.query(
-      'UPDATE saforgandia_noticias SET titulo = $1, conteudo = $2, imagem_url = $3 WHERE id = $4 RETURNING *',
-      [titulo, conteudo, imagem_url, id]
+      `UPDATE saforgandia_noticias 
+       SET titulo = $1, conteudo = $2, 
+           imagem_url = COALESCE($3, imagem_url), 
+           imagem_large = COALESCE($4, imagem_large), 
+           imagem_small = COALESCE($5, imagem_small) 
+       WHERE id = $6 RETURNING *`,
+      [titulo, conteudo, imagem_url, imageLarge, imageSmall, id]
     );
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Notícia não encontrada' });
     }
-    res.json(result.rows[0]);
+
+    res.json({ message: 'Notícia atualizada com sucesso', noticia: result.rows[0] });
+
   } catch (error) {
-    console.error("Erro ao atualizar notícia:", error);
+    console.error("Erro ao atualizar notícia:", error.message);
     res.status(500).json({ error: 'Erro ao atualizar notícia' });
   }
 });
+
 
 // ❌ Deletar uma notícia
 app.delete('/noticias/:id', async (req, res) => {
