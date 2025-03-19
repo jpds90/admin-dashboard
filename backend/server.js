@@ -190,25 +190,19 @@ app.post("/upload", upload.single("imagem"), async (req, res) => {
 });
 
 
-// 📸 Upload de LOGO no Cloudinary
 app.post("/upload-logo", upload.single("logo"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "Nenhuma logo enviada" });
-    }
+    if (!req.file) return res.status(400).json({ error: "Nenhuma logo enviada" });
 
     const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-      folder: "saforgandia/logos", // Salvar em uma subpasta específica para logos
+      folder: "saforgandia/logos",
     });
 
-    const logo_url = cloudinary.url(uploadResult.public_id, { width: 200, height: 200, crop: "fill" });
+    const logo_url = uploadResult.secure_url; // Pegamos a URL segura do Cloudinary
 
-    await pool.query(
-      "INSERT INTO saforgandia_logos (logo_url) VALUES ($1) RETURNING *",
-      [logo_url]
-    );
+    await pool.query("INSERT INTO saforgandia_logos (logo_url) VALUES ($1)", [logo_url]);
 
-    fs.unlinkSync(req.file.path); // Remove o arquivo temporário após o upload
+    fs.unlinkSync(req.file.path); // Remove o arquivo temporário
 
     res.json({ logo: logo_url });
 
@@ -219,6 +213,22 @@ app.post("/upload-logo", upload.single("logo"), async (req, res) => {
 });
 
 
+app.get("/logo", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT logo_url FROM saforgandia_logos ORDER BY created_at DESC LIMIT 1"
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Nenhuma logo encontrada" });
+    }
+
+    res.json({ logo: result.rows[0].logo_url });
+  } catch (error) {
+    console.error("Erro ao buscar a logo:", error);
+    res.status(500).json({ error: "Erro ao buscar a logo" });
+  }
+});
 
 
 
