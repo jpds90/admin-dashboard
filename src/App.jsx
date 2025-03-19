@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import { useState } from "react";
 import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Administração de Notícias
 import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma notícia
 import Translate from "./components/Translate";
 import AdminLogo from "./pages/AdminLogo"; // Importe o componente correto
-
+import { useState } from "react";
 
 // Componente Sidebar
 function Sidebar() {
@@ -35,8 +34,9 @@ function Sidebar() {
 // Componente Header
 function Header() {
   return (
-    <div className="bg-gray-800 text-white p-4">
+    <div className="bg-gray-800 text-white p-4 flex justify-between items-center">
       <h1 className="text-xl">Dashboard Admin</h1>
+      <Translate /> {/* Seletor de idioma à direita */}
     </div>
   );
 }
@@ -51,10 +51,9 @@ export default function App() {
   return (
     <Router>
       <div className="flex flex-col h-screen">
-        <Translate /> {/* Adiciona o seletor de idioma */}
-        {/* Cabeçalho */}
+        {/* Cabeçalho com seletor de idioma à direita */}
         <Header />
-        
+
         <div className="flex flex-1">
           {/* Sidebar (visível apenas em telas grandes) */}
           <div className="hidden lg:block">
