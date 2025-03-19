@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UploadImage from "../components/UploadImage"; // Importando o componente
 
 export default function AdminNoticias() {
   const [titulo, setTitulo] = useState("");
   const [conteudo, setConteudo] = useState("");
-  const [imagemUrl, setImagemUrl] = useState(""); // Estado para armazenar a URL da imagem
+  const [imagemUrl, setImagemUrl] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [noticias, setNoticias] = useState([]);
 
+  // 🔄 Buscar notícias ao carregar a página
+  useEffect(() => {
+    fetchNoticias();
+  }, []);
+
+  const fetchNoticias = async () => {
+    const response = await fetch("https://backendsafor.onrender.com/noticias");
+    const data = await response.json();
+    setNoticias(data);
+  };
+
+  // 📝 Cadastrar nova notícia
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,8 +34,25 @@ export default function AdminNoticias() {
       setTitulo("");
       setConteudo("");
       setImagemUrl("");
+      fetchNoticias(); // Atualiza a lista após cadastro
     } else {
       setMensagem("Erro ao cadastrar notícia.");
+    }
+  };
+
+  // ❌ Excluir notícia
+  const handleDelete = async (id) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta notícia?")) return;
+
+    const response = await fetch(`https://backendsafor.onrender.com/noticias/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      setMensagem("Notícia excluída com sucesso!");
+      fetchNoticias(); // Atualiza a lista após exclusão
+    } else {
+      setMensagem("Erro ao excluir notícia.");
     }
   };
 
@@ -30,6 +60,7 @@ export default function AdminNoticias() {
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Cadastrar Notícia</h1>
       {mensagem && <p className="text-green-600">{mensagem}</p>}
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -56,6 +87,29 @@ export default function AdminNoticias() {
           Cadastrar
         </button>
       </form>
+
+      {/* 📋 Lista de Notícias Cadastradas */}
+      <h2 className="text-xl font-bold mt-6">Notícias Cadastradas</h2>
+      <ul className="mt-4 space-y-4">
+        {noticias.map((noticia) => (
+          <li key={noticia.id} className="border p-4 rounded flex justify-between items-center">
+            <div>
+              <h3 className="text-lg font-bold">{noticia.titulo}</h3>
+              <p className="text-gray-600">{noticia.conteudo}</p>
+              {noticia.imagem_small && (
+                <img src={noticia.imagem_small} alt="Imagem da notícia" className="mt-2 w-40 rounded" />
+              )}
+              <p className="text-xs text-gray-400">Publicado em: {new Date(noticia.data_publicacao).toLocaleDateString()}</p>
+            </div>
+            <button
+              onClick={() => handleDelete(noticia.id)}
+              className="bg-red-500 text-white px-3 py-1 rounded"
+            >
+              Excluir
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
