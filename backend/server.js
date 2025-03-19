@@ -156,7 +156,34 @@ app.delete('/noticias/:id', async (req, res) => {
   }
 });
 
+// 📸 Upload de imagem no Cloudinary
+app.post("/upload", upload.single("imagem"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhuma imagem enviada" });
+    }
 
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "saforgandia",
+    });
+
+    const imagem_large = cloudinary.url(uploadResult.public_id, { width: 802, height: 461, crop: "fill" });
+    const imagem_small = cloudinary.url(uploadResult.public_id, { width: 351, height: 197, crop: "fill" });
+
+    await pool.query(
+      "INSERT INTO saforgandia_imagens (original_url, large_url, small_url) VALUES ($1, $2, $3)",
+      [uploadResult.secure_url, imagem_large, imagem_small]
+    );
+
+    fs.unlinkSync(req.file.path);
+
+    res.json({ original: uploadResult.secure_url, large: imagem_large, small: imagem_small });
+
+  } catch (error) {
+    console.error("Erro no upload:", error);
+    res.status(500).json({ error: "Erro ao processar imagem" });
+  }
+});
 
 // 🚀 Iniciar o servidor
 app.listen(port, () => {
