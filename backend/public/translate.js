@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const translateContainer = document.getElementById("translate-container");
     translateContainer.innerHTML = `
-<button onclick="toggleTranslateDropdown()" style="color: #1e40af; padding: 10px; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; background: none;">
-    🌍 <span id="selected-lang">PT</span> ▼
-</button>
+        <button onclick="toggleTranslateDropdown()" style="background-color: transparent; color: #1e40af; padding: 10px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            🌍 <span id="selected-lang">PT</span> ▼
+        </button>
 
         <div id="translate-dropdown" style="display: none; position: absolute; bottom: 40px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px;">
             <button onclick="changeLanguage('pt')">PT</button>
