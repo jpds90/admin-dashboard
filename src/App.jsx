@@ -22,6 +22,9 @@ function Sidebar() {
         <li className="mb-2 hover:bg-gray-700 p-2 rounded">
           <Link to="/players">Jogadores</Link>
         </li>
+        <li className="mb-2 hover:bg-gray-700 p-2 rounded">
+          <Link to="/upload-logo">Upload de Logo</Link>
+        </li>
       </ul>
     </div>
   );
@@ -65,6 +68,7 @@ export default function App() {
               <Route path="/store" element={<h2 className='p-5'>Gerenciar Loja</h2>} />
               <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
               <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
+              <Route path="/upload-logo" element={<AdminLogo />} /> {/* Nova rota adicionada */}
             </Routes>
           </div>
         </div>
