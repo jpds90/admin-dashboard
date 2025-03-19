@@ -1,49 +1,32 @@
-import { useEffect, useState } from "react";
-import { FaLanguage } from "react-icons/fa"; // Ícone de linguagem
-import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io"; // Ícones de seta
+import { useState } from "react";
 
 const Translate = () => {
-    const [open, setOpen] = useState(false); // Estado para exibir/esconder as opções
+    const [selectedLang, setSelectedLang] = useState("PT");
 
-    useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-        script.type = "text/javascript";
-        script.async = true;
-        document.body.appendChild(script);
-
-        window.googleTranslateElementInit = () => {
-            new window.google.translate.TranslateElement(
-                {
-                    pageLanguage: "pt",
-                    includedLanguages: "en,es,pt,fr", // Apenas Inglês, Espanhol, Português e Francês
-                    layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-                    autoDisplay: false
-                },
-                "google_translate_element"
-            );
-        };
-    }, []);
+    // Função para trocar idioma
+    const changeLanguage = (langCode, langLabel) => {
+        setSelectedLang(langLabel);
+        const googleFrame = document.querySelector(".goog-te-combo");
+        if (googleFrame) {
+            googleFrame.value = langCode;
+            googleFrame.dispatchEvent(new Event("change"));
+        }
+    };
 
     return (
-        <div className="relative inline-block">
-            {/* Botão personalizado */}
-            <button
-                onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 bg-green-100 text-green-600 px-4 py-2 rounded-xl shadow-md transition-all hover:bg-green-200"
-            >
-                <FaLanguage size={20} />
-                <span>PT</span> {/* Padrão: Português */}
-                {open ? <IoIosArrowUp /> : <IoIosArrowDown />}
-            </button>
-
-            {/* Container do Google Translate (oculto por padrão) */}
-            <div
-                id="google_translate_element"
-                className={`absolute left-0 mt-2 bg-white p-2 rounded-lg shadow-md ${
-                    open ? "block" : "hidden"
-                }`}
-            ></div>
+        <div className="bg-green-100 text-green-600 px-4 py-2 rounded-xl shadow-md flex items-center gap-2">
+            <span className="font-bold">🌍</span>
+            {["PT", "EN", "ES", "FR"].map((lang) => (
+                <button
+                    key={lang}
+                    onClick={() => changeLanguage(lang.toLowerCase(), lang)}
+                    className={`px-2 py-1 rounded ${
+                        selectedLang === lang ? "bg-green-300 font-bold" : ""
+                    }`}
+                >
+                    {lang}
+                </button>
+            ))}
         </div>
     );
 };
