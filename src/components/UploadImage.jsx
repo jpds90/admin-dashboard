@@ -22,7 +22,7 @@ export default function UploadImage() {
     formData.append("imagem", file); // Nome do campo deve coincidir com o backend
 
     try {
-      const response = await fetch("https://backendsafor.onrender.com/upload", {
+      const response = await fetch("https://backendsafor.onrender.com/noticias", {
         method: "POST",
         body: formData,
       });
