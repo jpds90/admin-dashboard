@@ -39,22 +39,31 @@
             padding: 50px 0;
             background-color: #333;
         }
-        #banner-container {
-            display: flex;
-            overflow: hidden;
-            width: 100%;
-            max-height: 400px;
-            position: relative;
-        }
-        .carousel-item {
-            flex: 0 0 100%;
-            transition: transform 1s ease-in-out;
-        }
-        .carousel-item img {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-        }
+    #banner-container {
+        width: 993px;
+        height: 558px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .carousel-item {
+        position: absolute;
+        width: 993px;
+        height: 558px;
+        transition: opacity 1s ease-in-out;
+        opacity: 0;
+    }
+    .carousel-item img {
+        width: 993px;
+        height: 558px;
+        object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
+    }
+    .carousel-item.active {
+        opacity: 1;
+    }
         #noticias {
             padding: 20px;
             max-width: 900px;
@@ -134,32 +143,33 @@
     </footer>
 
     <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            try {
-                // 🔹 Carregar Banners do Backend
-                const bannersResponse = await fetch("/api/banners");
-                const banners = await bannersResponse.json();
+    document.addEventListener("DOMContentLoaded", async function () {
+        try {
+            // 🔹 Carregar banners da API
+            const bannersResponse = await fetch("/api/banners");
+            const banners = await bannersResponse.json();
+            const bannerContainer = document.getElementById("banner-container");
+            bannerContainer.innerHTML = "";
 
-                const bannerContainer = document.getElementById("banner-container");
-                bannerContainer.innerHTML = ""; // Limpa antes de adicionar os banners
+            if (banners.length === 0) {
+                bannerContainer.innerHTML = "<p>Nenhum banner disponível.</p>";
+            } else {
+                banners.forEach((banner, index) => {
+                    const bannerElement = document.createElement("div");
+                    bannerElement.classList.add("carousel-item");
+                    if (index === 0) bannerElement.classList.add("active"); // Primeiro banner visível
 
-                if (banners.length === 0) {
-                    bannerContainer.innerHTML = "<p>Nenhum banner disponível.</p>";
-                } else {
-                    banners.forEach((banner, index) => {
-                        const bannerElement = document.createElement("div");
-                        bannerElement.classList.add("carousel-item");
-                        if (index === 0) bannerElement.style.transform = "translateX(0%)";
-                        bannerElement.innerHTML = `<img src="${banner.banners_url}" alt="Banner">`;
-                        bannerContainer.appendChild(bannerElement);
-                    });
+                    bannerElement.innerHTML = `<img src="${banner.banners_url}" alt="Banner">`;
+                    bannerContainer.appendChild(bannerElement);
+                });
 
-                    iniciarCarrossel(); // Iniciar animação do carrossel
-                }
-            } catch (error) {
-                console.error("Erro ao carregar banners:", error);
-                document.getElementById("banner-container").innerHTML = "<p>Erro ao carregar banners.</p>";
+                iniciarCarrossel(); // Iniciar a rotação dos banners
             }
+        } catch (error) {
+            console.error("Erro ao carregar banners:", error);
+            document.getElementById("banner-container").innerHTML = "<p>Erro ao carregar banners.</p>";
+        }
+    });
 
             try {
                 // 🔹 Carregar Notícias
@@ -204,18 +214,16 @@
             }
         });
 
-        function iniciarCarrossel() {
-            let index = 0;
-            const banners = document.querySelectorAll(".carousel-item");
+    function iniciarCarrossel() {
+        let index = 0;
+        const banners = document.querySelectorAll(".carousel-item");
 
-            setInterval(() => {
-                banners.forEach((banner, i) => {
-                    banner.style.transform = `translateX(${(i - index) * 100}%)`;
-                });
-
-                index = (index + 1) % banners.length;
-            }, 3000); // Troca a cada 3 segundos
-        }
+        setInterval(() => {
+            banners.forEach(banner => banner.classList.remove("active"));
+            banners[index].classList.add("active");
+            index = (index + 1) % banners.length;
+        }, 3000);
+    }
     </script>
 
     <!-- Botão de tradução fixo no rodapé -->
