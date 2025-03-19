@@ -170,6 +170,25 @@ app.get("/logo", async (req, res) => {
   }
 });
 
+app.get("/api/logo", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT logo_url FROM saforgandia_logos ORDER BY created_at DESC LIMIT 1"
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Nenhuma logo encontrada" });
+    }
+
+    res.json({ logo_url: result.rows[0].logo_url });
+  } catch (error) {
+    console.error("Erro ao buscar a logo:", error);
+    res.status(500).json({ error: "Erro ao buscar a logo" });
+  }
+});
+
+
+
 // 🚀 Iniciar o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
