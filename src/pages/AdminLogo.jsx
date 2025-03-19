@@ -23,7 +23,7 @@ export default function AdminLogo() {
     formData.append("field", "logo"); // Indica que é um logo
 
     try {
-      const response = await fetch("https://backendsafor.onrender.com/upload", {
+      const response = await fetch("https://backendsafor.onrender.com/upload-logo", {
         method: "POST",
         body: formData,
       });
