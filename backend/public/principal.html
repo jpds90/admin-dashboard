@@ -127,40 +127,51 @@
         <p>&copy; 2025 Saforgandia FC - Todos os direitos reservados.</p>
     </footer>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            try {
-                const response = await fetch("/noticias"); // Faz a requisição para o backend
-                const noticias = await response.json(); // Converte para JSON
-                
-                const noticiasContainer = document.getElementById("noticias-container");
-                noticiasContainer.innerHTML = ""; // Limpa o conteúdo antes de adicionar novas notícias
+<script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    try {
+      // 🔹 Carregar notícias
+      const noticiasResponse = await fetch("/noticias");
+      const noticias = await noticiasResponse.json();
 
-                if (noticias.length === 0) {
-                    noticiasContainer.innerHTML = "<p>Nenhuma notícia disponível.</p>";
-                    return;
-                }
+      const noticiasContainer = document.getElementById("noticias-container");
+      noticiasContainer.innerHTML = ""; // Limpa o conteúdo antes de adicionar novas notícias
 
-                noticias.forEach(noticia => {
-                    const noticiaElement = document.createElement("div");
-                    noticiaElement.classList.add("noticia");
+      if (noticias.length === 0) {
+        noticiasContainer.innerHTML = "<p>Nenhuma notícia disponível.</p>";
+      } else {
+        noticias.forEach(noticia => {
+          const noticiaElement = document.createElement("div");
+          noticiaElement.classList.add("noticia");
 
-                    noticiaElement.innerHTML = `
-                        <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
-                        <h3>${noticia.titulo}</h3>
-                        <p>${noticia.conteudo.substring(0, 100)}...</p>
-                        <a href="noticia.html?id=${noticia.id}">Leia mais</a>
-                    `;
+          noticiaElement.innerHTML = `
+            <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
+            <h3>${noticia.titulo}</h3>
+            <p>${noticia.conteudo.substring(0, 100)}...</p>
+            <a href="noticia.html?id=${noticia.id}">Leia mais</a>
+          `;
 
-                    noticiasContainer.appendChild(noticiaElement);
-                });
-
-            } catch (error) {
-                console.error("Erro ao carregar notícias:", error);
-                document.getElementById("noticias-container").innerHTML = "<p>Erro ao carregar notícias.</p>";
-            }
+          noticiasContainer.appendChild(noticiaElement);
         });
-    </script>
+      }
+    } catch (error) {
+      console.error("Erro ao carregar notícias:", error);
+      document.getElementById("noticias-container").innerHTML = "<p>Erro ao carregar notícias.</p>";
+    }
+
+    try {
+      // 🔹 Carregar logo automaticamente (sem precisar de localhost)
+      const logoResponse = await fetch("/api/logo");
+      const logoData = await logoResponse.json();
+
+      if (logoData.logo_url) {
+        document.getElementById("logo-img").src = logoData.logo_url;
+      }
+    } catch (error) {
+      console.error("Erro ao carregar a logo:", error);
+    }
+  });
+</script>
 
 
 </body>
