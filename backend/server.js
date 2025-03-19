@@ -190,6 +190,33 @@ app.post("/upload", upload.single("imagem"), async (req, res) => {
 });
 
 
+// 📸 Upload de LOGO no Cloudinary
+app.post("/upload-logo", upload.single("logo"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhuma logo enviada" });
+    }
+
+    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: "saforgandia/logos", // Salvar em uma subpasta específica para logos
+    });
+
+    const logo_url = cloudinary.url(uploadResult.public_id, { width: 200, height: 200, crop: "fill" });
+
+    await pool.query(
+      "INSERT INTO saforgandia_logos (logo_url) VALUES ($1) RETURNING *",
+      [logo_url]
+    );
+
+    fs.unlinkSync(req.file.path); // Remove o arquivo temporário após o upload
+
+    res.json({ logo: logo_url });
+
+  } catch (error) {
+    console.error("Erro no upload da logo:", error);
+    res.status(500).json({ error: "Erro ao processar o upload da logo" });
+  }
+});
 
 
 
