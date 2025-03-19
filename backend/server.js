@@ -194,9 +194,14 @@ app.post("/upload-logo", upload.single("logo"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Nenhuma logo enviada" });
 
-    const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-      folder: "saforgandia/logos",
-    });
+const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+  folder: "saforgandia/logos",
+  width: 200, // Largura fixa
+  height: 200, // Altura fixa
+  crop: "fill", // Garante que a imagem preencha o tamanho especificado
+  gravity: "center", // Centraliza a imagem no corte
+});
+
 
     const logo_url = uploadResult.secure_url; // Pegamos a URL segura do Cloudinary
 
