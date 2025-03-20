@@ -41,10 +41,12 @@
         }
         #banner-container {
            display: flex;
+           justify-content: center;  /* Centraliza horizontalmente */
            overflow: hidden;
-           width: 100%;
+           width: 993px;             /* Tamanho fixo do banner */
+           height: 558px;            /* Tamanho fixo do banner */
            position: relative;
-           height: 56.25vw;  /* Mantém a proporção 16:9 com base na largura */
+           margin: 0 auto;           /* Centraliza na página */
         }
 
         .carousel-item {
@@ -55,10 +57,9 @@
         .carousel-item img {
           width: 100%;
           height: 100%;
-          object-fit: cover;  /* Garante que a imagem cubra a área do contêiner */
+          object-fit: cover;  /* Garante que a imagem cubra a área sem distorção */
         }
 
-        }
         #noticias {
             padding: 20px;
             max-width: 900px;
@@ -100,9 +101,6 @@
                 flex-direction: column;
                 align-items: center;
             }
-            #banner-container {
-               height: 40vw;  /* Ajuste para telas menores, mantendo a proporção */
-            }
         }
     </style>
 </head>
@@ -143,7 +141,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", async function () {
             try {
-                // 🔹 Carregar Banners do Backend
+                // Carregar Banners do Backend
                 const bannersResponse = await fetch("/api/banners");
                 const banners = await bannersResponse.json();
 
@@ -169,7 +167,7 @@
             }
 
             try {
-                // 🔹 Carregar Notícias
+                // Carregar Notícias
                 const noticiasResponse = await fetch("/noticias");
                 const noticias = await noticiasResponse.json();
 
@@ -199,7 +197,7 @@
             }
 
             try {
-                // 🔹 Carregar Logo
+                // Carregar Logo
                 const logoResponse = await fetch("/api/logo");
                 const logoData = await logoResponse.json();
 
