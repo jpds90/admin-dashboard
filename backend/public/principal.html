@@ -214,14 +214,19 @@
             let index = 0;
             const banners = document.querySelectorAll(".carousel-item");
 
+            banners[index].style.opacity = 1; // Mostra o primeiro banner
+
             setInterval(() => {
                 banners.forEach((banner, i) => {
-                    banner.style.transform = `translateX(${(i - index) * 100}%)`;
+                    banner.style.opacity = 0; // Esconde todos
                 });
 
                 index = (index + 1) % banners.length;
-            }, 3000); // Troca a cada 3 segundos
+                banners[index].style.opacity = 1; // Mostra o próximo
+
+            }, 3000);
         }
+
     </script>
 
     <!-- Botão de tradução fixo no rodapé -->
