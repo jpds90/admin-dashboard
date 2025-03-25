@@ -14,24 +14,24 @@ document.addEventListener("DOMContentLoaded", function () {
         <div id="google_translate_element" style="display: none;"></div>
     `;
 
+    // Carregar o script do Google Translate
     const script = document.createElement("script");
     script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
     script.async = true;
     document.body.appendChild(script);
+
+    // Esperar o carregamento completo do Google Translate
+    script.onload = function () {
+        // Ocultar o banner do Google Tradutor
+        const translateBanner = document.querySelector('.goog-te-banner-frame');
+        if (translateBanner) {
+            translateBanner.style.display = 'none';
+        }
+    };
 });
 
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({ pageLanguage: "pt" }, "google_translate_element");
-
-    // Esconder a faixa do Google Tradutor (o banner)
-    const style = document.createElement('style');
-    style.innerHTML = `
-        /* Escondendo o banner do Google Tradutor */
-        .goog-te-banner-frame {
-            display: none !important;
-        }
-    `;
-    document.head.appendChild(style);
 }
 
 function changeLanguage(langCode) {
