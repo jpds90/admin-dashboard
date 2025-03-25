@@ -66,7 +66,7 @@
             border-radius: 5px;
         }
         .voltar:hover {
-            background-color: #226306;
+            background-color: #002d7a;
         }
         footer {
             background-color: #40c455;
@@ -157,16 +157,13 @@
             document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
         }
     });
-</script>
 
-<script>
     document.addEventListener("DOMContentLoaded", function () {
         const translateContainer = document.getElementById("translate-container");
         translateContainer.innerHTML = `
             <button onclick="toggleTranslateDropdown()" style="background-color: #e0f9e0; color: #1b5e20; padding: 10px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
                 🌍 <span id="selected-lang">PT</span> ▼
             </button>
-
 
             <div id="translate-dropdown" style="display: none; position: absolute; bottom: 40px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px;">
                 <button onclick="changeLanguage('pt')">PT</button>
@@ -185,6 +182,15 @@
 
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({ pageLanguage: "pt" }, "google_translate_element");
+
+        // Agora, forçamos a remoção da faixa de tradução assim que o Google Tradutor carregar
+        const intervalId = setInterval(function() {
+            const banner = document.querySelector(".goog-te-banner-frame");
+            if (banner) {
+                banner.style.display = 'none';
+                clearInterval(intervalId); // Para de procurar depois que a faixa for removida
+            }
+        }, 100); // Verifica a cada 100ms
     }
 
     function changeLanguage(langCode) {
