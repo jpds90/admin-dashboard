@@ -82,20 +82,19 @@
             top: 10px;
         }
 
-        /* Oculta a barra do Google Tradutor */
+        /* Esconde a barra do Google Tradutor e o combo box */
         .goog-te-banner-frame {
             display: none !important;
         }
 
-        /* Corrige o deslocamento da página quando a tradução é ativada */
+        .goog-te-combo {
+            display: none !important;
+        }
+
+        /* Remover qualquer deslocamento causado pela tradução */
         body {
             padding-top: 0 !important;
             margin-top: 0 !important;
-        }
-
-        /* Oculta a interface do Google Tradutor (combo box) */
-        .goog-te-combo {
-            display: none !important;
         }
     </style>
 </head>
@@ -158,21 +157,6 @@
             document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
         }
     });
-
-    // Remover a faixa do Google Tradutor assim que a página for carregada
-    function removeGoogleTranslateBanner() {
-        const googleBanner = document.querySelector(".goog-te-banner-frame");
-        if (googleBanner) {
-            googleBanner.style.display = "none"; // Remove a faixa
-        }
-        document.body.style.paddingTop = "0px";  // Remove o deslocamento do topo
-        document.body.style.marginTop = "0px";   // Remove o deslocamento do topo
-    }
-
-    // Aguarda até que a página seja carregada completamente
-    window.onload = function() {
-        setInterval(removeGoogleTranslateBanner, 500);
-    };
 </script>
 
 <script>
