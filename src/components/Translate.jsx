@@ -1,69 +1,41 @@
-import { useState, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
+document.addEventListener("DOMContentLoaded", function () {
+    const translateContainer = document.getElementById("translate-container");
+    translateContainer.innerHTML = `
+<button class="notranslate" onclick="toggleTranslateDropdown()" style="background-color: #e0f9e0; color: #1b5e20; padding: 10px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+    🌍 <span id="selected-lang">PT</span> ▼
+</button>
 
-const Translate = () => {
-    const [selectedLang, setSelectedLang] = useState("pt");
-    const [isOpen, setIsOpen] = useState(false);
+<div id="translate-dropdown" style="display: none; position: absolute; bottom: 40px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px;">
+    <button class="notranslate" onclick="changeLanguage('pt')">PT</button>
+    <button class="notranslate" onclick="changeLanguage('en')">EN</button>
+    <button class="notranslate" onclick="changeLanguage('es')">ES</button>
+    <button class="notranslate" onclick="changeLanguage('fr')">FR</button>
+</div>
 
-    useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-        script.async = true;
-        document.body.appendChild(script);
+        <div id="google_translate_element" style="display: none;"></div>
+    `;
 
-        window.googleTranslateElementInit = () => {
-            new window.google.translate.TranslateElement(
-                { pageLanguage: "pt" },
-                "google_translate_element"
-            );
-        };
-    }, []);
+    const script = document.createElement("script");
+    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    document.body.appendChild(script);
+});
 
-    const changeLanguage = (langCode) => {
-        setSelectedLang(langCode);
-        const googleFrame = document.querySelector(".goog-te-combo");
-        if (googleFrame) {
-            googleFrame.value = langCode;
-            googleFrame.dispatchEvent(new Event("change"));
-        }
-        setIsOpen(false);
-    };
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({ pageLanguage: "pt" }, "google_translate_element");
+}
 
-    const languages = [
-        { code: "pt", label: "PT" },
-        { code: "en", label: "EN" },
-        { code: "es", label: "ES" },
-        { code: "fr", label: "FR" }
-    ];
+function changeLanguage(langCode) {
+    document.getElementById("selected-lang").innerText = langCode.toUpperCase();
+    const googleFrame = document.querySelector(".goog-te-combo");
+    if (googleFrame) {
+        googleFrame.value = langCode;
+        googleFrame.dispatchEvent(new Event("change"));
+    }
+    document.getElementById("translate-dropdown").style.display = "none";
+}
 
-    return (
-        <div className="relative inline-block text-left">
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-                className="bg-blue-100 text-blue-600 px-4 py-2 rounded-xl shadow-md flex items-center gap-2"
-            >
-                <span className="font-bold">🌍 {languages.find(lang => lang.code === selectedLang)?.label}</span>
-                <ChevronDown size={16} />
-            </button>
-            
-            {isOpen && (
-                <div className="absolute mt-2 w-24 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                    {languages.map((lang) => (
-                        <button
-                            key={lang.code}
-                            onClick={() => changeLanguage(lang.code)}
-                            className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
-                                selectedLang === lang.code ? "font-bold bg-gray-200" : ""
-                            }`}
-                        >
-                            {lang.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-            <div id="google_translate_element" className="hidden"></div>
-        </div>
-    );
-};
-
-export default Translate;
+function toggleTranslateDropdown() {
+    const dropdown = document.getElementById("translate-dropdown");
+    dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+}
