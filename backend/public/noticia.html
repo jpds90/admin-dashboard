@@ -107,7 +107,7 @@
 
 <footer>
     <p>&copy; 2025 Saforgandia FC - Todos os direitos reservados.</p>
-    <div id="translate-container"></div>
+    <div id="translate-container" style="margin-top: 10px;"></div>
 </footer>
 
 <script>
@@ -142,20 +142,10 @@
             document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
         }
     });
-
-    // Carrega o script de tradução
-    document.addEventListener("DOMContentLoaded", function () {
-        const translateScript = document.createElement("script");
-        translateScript.src = "https://backendsafor.onrender.com/translate.js";
-        translateScript.onload = function () {
-            console.log("Script de tradução carregado!");
-        };
-        translateScript.onerror = function () {
-            console.error("Erro ao carregar o script de tradução.");
-        };
-        document.body.appendChild(translateScript);
-    });
 </script>
+
+<!-- Importar o script de tradução -->
+<script src="/translate.js"></script>
 
 </body>
 </html>
