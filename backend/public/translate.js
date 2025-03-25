@@ -23,14 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({ pageLanguage: "pt" }, "google_translate_element");
 
-    // Esconder a faixa do Google Tradutor assim que o tradutor for carregado
-    const intervalId = setInterval(function() {
-        const banner = document.querySelector(".goog-te-banner-frame");
-        if (banner) {
-            banner.style.display = 'none'; // Esconde a faixa
-            clearInterval(intervalId); // Para de procurar
+    // Esconder a faixa do Google Tradutor usando CSS diretamente no JavaScript
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .goog-te-banner-frame {
+            display: none !important;
         }
-    }, 100); // Verifica a cada 100ms
+    `;
+    document.head.appendChild(style);
 }
 
 function changeLanguage(langCode) {
