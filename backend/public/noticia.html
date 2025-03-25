@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notícia - Saforgandia FC</title>
+    <title>Notícia - Safor Club de Fútbol Gandia</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -66,7 +66,7 @@
             border-radius: 5px;
         }
         .voltar:hover {
-            background-color: #07f767;
+            background-color: #002d7a;
         }
         footer {
             background-color: #40c455;
@@ -74,9 +74,12 @@
             text-align: center;
             padding: 10px 0;
             margin-top: 20px;
+            position: relative;
         }
         #translate-container {
-            margin-top: 10px;
+            position: absolute;
+            right: 20px;
+            top: 10px;
         }
     </style>
 </head>
@@ -140,15 +143,18 @@
         }
     });
 
-    // Script para carregar o tradutor
-    function loadTranslateScript() {
-        const script = document.createElement("script");
-        script.src = "/translate.jsx";
-        script.async = true;
-        document.body.appendChild(script);
-    }
-
-    loadTranslateScript();
+    // Carrega o script de tradução
+    document.addEventListener("DOMContentLoaded", function () {
+        const translateScript = document.createElement("script");
+        translateScript.src = "https://backendsafor.onrender.com/translate.js";
+        translateScript.onload = function () {
+            console.log("Script de tradução carregado!");
+        };
+        translateScript.onerror = function () {
+            console.error("Erro ao carregar o script de tradução.");
+        };
+        document.body.appendChild(translateScript);
+    });
 </script>
 
 </body>
