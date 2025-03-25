@@ -5,128 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Safor Club de Fútbol Gandia</title>
     <link rel="stylesheet" href="styles.css">
-
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img id="logo-img" src="images/logo.png" alt="Logo do Saforgandia FC" class="logo">
-            <h1>Safor Club de Fútbol Gandia</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#">Início</a></li>
-                <li><a href="#noticias">Notícias</a></li>
-                <li><a href="#agenda">Agenda</a></li>
-                <li><a href="#loja">Loja</a></li>
-                <li><a href="#clube">Clube</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <section id="destaques">
-        <div id="banner-container">
-            <p>Carregando banners...</p>
-        </div>
-    </section>
+<header>
+    <div class="logo-container">
+        <img id="logo-img" src="images/logo.png" alt="Logo do Saforgandia FC" class="logo">
+        <h1>Safor Club de Fútbol Gandia</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="principal.html">Início</a></li>
+            <li><a href="#noticias">Notícias</a></li>
+            <li><a href="#agenda">Agenda</a></li>
+            <li><a href="#loja">Loja</a></li>
+            <li><a href="#clube">Clube</a></li>
+        </ul>
+    </nav>
+</header>
 
-    <section id="noticias">
-        <h2>Últimas Notícias</h2>
-        <div id="noticias-container">
-            <p>Carregando notícias...</p>
-        </div>
-    </section>
+<section id="destaques">
+    <div id="banner-container">
+        <p>Carregando banners...</p>
+    </div>
+</section>
 
-    <footer>
-        <p>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
-        <div id="translate-container"></div>
-    </footer>
+<section id="noticias">
+    <h2>Últimas Notícias</h2>
+    <div id="noticias-container">
+        <p>Carregando notícias...</p>
+    </div>
+</section>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            try {
-                // Carregar Banners do Backend
-                const bannersResponse = await fetch("/api/banners");
-                const banners = await bannersResponse.json();
+<footer>
+    <p>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
+    <div id="translate-container"></div>
+</footer>
 
-                const bannerContainer = document.getElementById("banner-container");
-                bannerContainer.innerHTML = ""; // Limpa antes de adicionar os banners
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        // Carregar Banners do Backend
+        try {
+            const bannersResponse = await fetch("/api/banners");
+            const banners = await bannersResponse.json();
 
-                if (banners.length === 0) {
-                    bannerContainer.innerHTML = "<p>Nenhum banner disponível.</p>";
-                } else {
-                    banners.forEach((banner, index) => {
-                        const bannerElement = document.createElement("div");
-                        bannerElement.classList.add("carousel-item");
-                        if (index === 0) bannerElement.style.transform = "translateX(0%)";
-                        bannerElement.innerHTML = `<img src="${banner.banners_url}" alt="Banner">`;
-                        bannerContainer.appendChild(bannerElement);
-                    });
+            const bannerContainer = document.getElementById("banner-container");
+            bannerContainer.innerHTML = ""; // Limpa antes de adicionar os banners
 
-                    iniciarCarrossel(); // Iniciar animação do carrossel
-                }
-            } catch (error) {
-                console.error("Erro ao carregar banners:", error);
-                document.getElementById("banner-container").innerHTML = "<p>Erro ao carregar banners.</p>";
-            }
-
-            try {
-                // Carregar Notícias
-                const noticiasResponse = await fetch("/noticias");
-                const noticias = await noticiasResponse.json();
-
-                const noticiasContainer = document.getElementById("noticias-container");
-                noticiasContainer.innerHTML = ""; // Limpa antes de adicionar
-
-                if (noticias.length === 0) {
-                    noticiasContainer.innerHTML = "<p>Nenhuma notícia disponível.</p>";
-                } else {
-                    noticias.forEach(noticia => {
-                        const noticiaElement = document.createElement("div");
-                        noticiaElement.classList.add("noticia");
-
-                        noticiaElement.innerHTML = `
-                            <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
-                            <h3>${noticia.titulo}</h3>
-                            <p>${noticia.conteudo.substring(0, 100)}...</p>
-                            <a href="noticia.html?id=${noticia.id}">Leia mais</a>
-                        `;
-
-                        noticiasContainer.appendChild(noticiaElement);
-                    });
-                }
-            } catch (error) {
-                console.error("Erro ao carregar notícias:", error);
-                document.getElementById("noticias-container").innerHTML = "<p>Erro ao carregar notícias.</p>";
-            }
-
-            try {
-                // Carregar Logo
-                const logoResponse = await fetch("/api/logo");
-                const logoData = await logoResponse.json();
-
-                if (logoData.logo_url) {
-                    document.getElementById("logo-img").src = logoData.logo_url;
-                }
-            } catch (error) {
-                console.error("Erro ao carregar a logo:", error);
-            }
-        });
-
-        function iniciarCarrossel() {
-            let index = 0;
-            const banners = document.querySelectorAll(".carousel-item");
-
-            setInterval(() => {
-                banners.forEach((banner, i) => {
-                    banner.style.transform = `translateX(${(i - index) * 100}%)`;
+            if (banners.length === 0) {
+                bannerContainer.innerHTML = "<p>Nenhum banner disponível.</p>";
+            } else {
+                banners.forEach((banner, index) => {
+                    const bannerElement = document.createElement("div");
+                    bannerElement.classList.add("carousel-item");
+                    if (index === 0) bannerElement.style.transform = "translateX(0%)";
+                    bannerElement.innerHTML = `<img src="${banner.banners_url}" alt="Banner">`;
+                    bannerContainer.appendChild(bannerElement);
                 });
 
-                index = (index + 1) % banners.length;
-            }, 3000); // Troca a cada 3 segundos
+                iniciarCarrossel(); // Iniciar animação do carrossel
+            }
+        } catch (error) {
+            console.error("Erro ao carregar banners:", error);
+            document.getElementById("banner-container").innerHTML = "<p>Erro ao carregar banners.</p>";
         }
 
-            // Script para carregar o tradutor
+        // Carregar Notícias
+        try {
+            const noticiasResponse = await fetch("/noticias");
+            const noticias = await noticiasResponse.json();
+
+            const noticiasContainer = document.getElementById("noticias-container");
+            noticiasContainer.innerHTML = ""; // Limpa antes de adicionar
+
+            if (noticias.length === 0) {
+                noticiasContainer.innerHTML = "<p>Nenhuma notícia disponível.</p>";
+            } else {
+                noticias.forEach(noticia => {
+                    const noticiaElement = document.createElement("div");
+                    noticiaElement.classList.add("noticia");
+
+                    noticiaElement.innerHTML = `
+                        <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
+                        <h3>${noticia.titulo}</h3>
+                        <p>${noticia.conteudo.substring(0, 100)}...</p>
+                        <a href="noticia.html?id=${noticia.id}">Leia mais</a>
+                    `;
+
+                    noticiasContainer.appendChild(noticiaElement);
+                });
+            }
+        } catch (error) {
+            console.error("Erro ao carregar notícias:", error);
+            document.getElementById("noticias-container").innerHTML = "<p>Erro ao carregar notícias.</p>";
+        }
+
+        // Carregar Logo
+        try {
+            const logoResponse = await fetch("/api/logo");
+            const logoData = await logoResponse.json();
+
+            if (logoData.logo_url) {
+                document.getElementById("logo-img").src = logoData.logo_url;
+            }
+        } catch (error) {
+            console.error("Erro ao carregar a logo:", error);
+        }
+    });
+
+    function iniciarCarrossel() {
+        let index = 0;
+        const banners = document.querySelectorAll(".carousel-item");
+
+        setInterval(() => {
+            banners.forEach((banner, i) => {
+                banner.style.transform = `translateX(${(i - index) * 100}%)`;
+            });
+
+            index = (index + 1) % banners.length;
+        }, 3000); // Troca a cada 3 segundos
+    }
+
+    // Script para carregar o tradutor
     function loadTranslateScript() {
         const script = document.createElement("script");
         script.src = "/translate.jsx";
@@ -135,8 +135,7 @@
     }
 
     loadTranslateScript();
-    </script>
-
+</script>
 
 </body>
 </html>
