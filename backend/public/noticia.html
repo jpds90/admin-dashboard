@@ -35,37 +35,39 @@
 </footer>
 
 <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-        // Obtém o ID da notícia da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const noticiaId = urlParams.get("id");
+// No seu script de carregamento da notícia:
+document.addEventListener("DOMContentLoaded", async function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const noticiaId = urlParams.get("id");
 
-        if (!noticiaId) {
+    if (!noticiaId) {
+        document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
+        return;
+    }
+
+    try {
+        const response = await fetch(`/noticias/${noticiaId}`);
+        const noticia = await response.json();
+
+        if (noticia.error) {
             document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
             return;
         }
 
-        try {
-            // Faz a requisição para obter os detalhes da notícia
-            const response = await fetch(`/noticias/${noticiaId}`);
-            const noticia = await response.json();
+        // Imagem com fallback caso a URL esteja vazia
+        const imagem = noticia.imagem_large || "path/to/default-image.jpg";
+        
+        document.getElementById("noticia").innerHTML = `
+            <img src="${imagem}" alt="${noticia.titulo}">
+            <h2>${noticia.titulo}</h2>
+            <p>${noticia.conteudo}</p>
+        `;
+    } catch (error) {
+        console.error("Erro ao carregar notícia:", error);
+        document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
+    }
+});
 
-            if (noticia.error) {
-                document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
-                return;
-            }
-
-            // Preenche a página com os dados da notícia
-            document.getElementById("noticia").innerHTML = `
-                <img src="${noticia.imagem_large}" alt="${noticia.titulo}">
-                <h2>${noticia.titulo}</h2>
-                <p>${noticia.conteudo}</p>
-            `;
-        } catch (error) {
-            console.error("Erro ao carregar notícia:", error);
-            document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
-        }
-    });
 </script>
 
 <script src="translate.js"></script>
