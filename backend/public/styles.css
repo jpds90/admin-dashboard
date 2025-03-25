@@ -12,7 +12,7 @@ body {
 }
 
 header {
-    background-color: #0d2c4e;
+    background-color: #40c455;
     color: #fff;
     padding: 20px;
     display: flex;
@@ -50,7 +50,7 @@ header nav ul li a {
 }
 
 header nav ul li a:hover {
-    color: #ffcc00;
+    color: #002d7a;
 }
 
 /* Carrossel de Banners */
@@ -124,17 +124,17 @@ header nav ul li a:hover {
     display: inline-block;
     margin-top: 10px;
     text-decoration: none;
-    color: #0d2c4e;
+    color: #40c455;
     font-weight: bold;
 }
 
 .noticia a:hover {
-    color: #ffcc00;
+    color: #002d7a;
 }
 
 /* Footer */
 footer {
-    background-color: #0d2c4e;
+    background-color: #40c455;
     color: #fff;
     text-align: center;
     padding: 20px;
@@ -175,5 +175,5 @@ a {
 }
 
 a:hover {
-    color: #ffcc00;
+    color: #002d7a;
 }
