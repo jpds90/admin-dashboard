@@ -1,17 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     const translateContainer = document.getElementById("translate-container");
     translateContainer.innerHTML = `
-<button class="notranslate" onclick="toggleTranslateDropdown()" style="background-color: #e0f9e0; color: #1b5e20; padding: 10px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-    🌍 <span id="selected-lang">PT</span> ▼
-</button>
+        <button onclick="toggleTranslateDropdown()" style="background-color: #e0f9e0; color: #1b5e20; padding: 10px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            🌍 <span id="selected-lang">PT</span> ▼
+        </button>
 
-<div id="translate-dropdown" style="display: none; position: absolute; bottom: 40px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px;">
-    <button class="notranslate" onclick="changeLanguage('pt')">PT</button>
-    <button class="notranslate" onclick="changeLanguage('en')">EN</button>
-    <button class="notranslate" onclick="changeLanguage('es')">ES</button>
-    <button class="notranslate" onclick="changeLanguage('fr')">FR</button>
-</div>
-
+        <div id="translate-dropdown" style="display: none; position: absolute; bottom: 40px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px;">
+            <button onclick="changeLanguage('pt')">PT</button>
+            <button onclick="changeLanguage('en')">EN</button>
+            <button onclick="changeLanguage('es')">ES</button>
+            <button onclick="changeLanguage('fr')">FR</button>
+        </div>
         <div id="google_translate_element" style="display: none;"></div>
     `;
 
@@ -23,6 +22,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({ pageLanguage: "pt" }, "google_translate_element");
+
+    // Esconder a faixa do Google Tradutor assim que o tradutor for carregado
+    const intervalId = setInterval(function() {
+        const banner = document.querySelector(".goog-te-banner-frame");
+        if (banner) {
+            banner.style.display = 'none'; // Esconde a faixa
+            clearInterval(intervalId); // Para de procurar
+        }
+    }, 100); // Verifica a cada 100ms
 }
 
 function changeLanguage(langCode) {
