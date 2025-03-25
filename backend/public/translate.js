@@ -23,9 +23,10 @@ document.addEventListener("DOMContentLoaded", function () {
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({ pageLanguage: "pt" }, "google_translate_element");
 
-    // Esconder a faixa do Google Tradutor usando CSS diretamente no JavaScript
+    // Esconder a faixa do Google Tradutor (o banner)
     const style = document.createElement('style');
     style.innerHTML = `
+        /* Escondendo o banner do Google Tradutor */
         .goog-te-banner-frame {
             display: none !important;
         }
