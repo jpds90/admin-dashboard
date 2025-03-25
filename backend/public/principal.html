@@ -37,7 +37,7 @@
             text-align: center;
             color: white;
             padding: 50px 0;
-            background-color: #333;
+            background-color: #fefffc;
         }
         #banner-container {
            display: flex;
@@ -92,7 +92,11 @@
             color: white;
             text-align: center;
             padding: 10px 0;
+            margin-top: 20px;
         }
+        #translate-container {
+            margin-top: 10px;
+        }}
         @media (max-width: 768px) {
             header h1 {
                 font-size: 1.5em;
@@ -139,6 +143,7 @@
 
     <footer>
         <p>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
+        <div id="translate-container"></div>
     </footer>
 
     <script>
@@ -224,14 +229,18 @@
                 index = (index + 1) % banners.length;
             }, 3000); // Troca a cada 3 segundos
         }
+
+            // Script para carregar o tradutor
+    function loadTranslateScript() {
+        const script = document.createElement("script");
+        script.src = "/translate.jsx";
+        script.async = true;
+        document.body.appendChild(script);
+    }
+
+    loadTranslateScript();
     </script>
 
-    <!-- Botão de tradução fixo no rodapé -->
-    <footer style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-        <div id="translate-container"></div>
-    </footer>
 
-    <!-- Importar o script de tradução -->
-    <script src="/translate.js"></script>   
 </body>
 </html>
