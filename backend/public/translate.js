@@ -25,8 +25,10 @@ async function translateText(text, targetLang) {
 async function translatePage(targetLang) {
     console.log("🔄 Traduzindo página para:", targetLang);
 
+    // Selecionar todos os elementos que precisam ser traduzidos
     const elements = document.querySelectorAll("[data-translate]");
 
+    // Iterar sobre os elementos para traduzir
     for (const el of elements) {
         const originalText = el.innerText.trim();
         if (!originalText) continue;
@@ -34,12 +36,14 @@ async function translatePage(targetLang) {
         el.setAttribute("data-original", originalText); // Salva o texto original
 
         try {
+            // Enviar o texto para o backend e pegar a tradução
             const translatedText = await fetch(`/traduzir`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: originalText, targetLang })
             }).then(res => res.json());
 
+            // Substituir o texto na página com a tradução
             el.innerText = translatedText.text;
         } catch (error) {
             console.error("❌ Erro ao traduzir o elemento:", el, error);
@@ -48,6 +52,7 @@ async function translatePage(targetLang) {
 
     console.log("✅ Tradução aplicada com sucesso!");
 }
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
