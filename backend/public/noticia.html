@@ -69,6 +69,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Erro ao carregar notícia:", error);
         document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
     }
+            // Carregar Logo
+        try {
+            const logoResponse = await fetch("/api/logo");
+            const logoData = await logoResponse.json();
+
+            if (logoData.logo_url) {
+                document.getElementById("logo-img").src = logoData.logo_url;
+            }
+        } catch (error) {
+            console.error("Erro ao carregar a logo:", error);
+        }
 });
 </script>
 
