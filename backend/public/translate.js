@@ -45,9 +45,13 @@ async function translatePage(targetLang) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("btn-pt").addEventListener("click", () => translatePage("pt"));
-    document.getElementById("btn-en").addEventListener("click", () => translatePage("en"));
-    document.getElementById("btn-es").addEventListener("click", () => translatePage("es"));
+    const dropdown = document.getElementById("language-dropdown");
 
-    console.log("✅ Botões de tradução adicionados com sucesso!");
+    dropdown.addEventListener("change", function () {
+        const selectedLang = dropdown.value;
+        translatePage(selectedLang);
+    });
+
+    console.log("✅ Seletor de idioma carregado com sucesso!");
 });
+
