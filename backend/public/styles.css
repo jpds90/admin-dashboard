@@ -55,6 +55,20 @@ nav ul li a {
 nav ul li a:hover {
     color: #1d9902; /* Cor ao passar o mouse */
 }
+
+/* ------------------------------------- */
+/* ESTILOS ESPECÍFICOS Google Tradutor */
+/* ------------------------------------- */
+
+
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+body {
+    top: 0px !important;
+}
+
 /* ------------------------------------- */
 /* ESTILOS ESPECÍFICOS PARA NOTICIA.HTML */
 /* ------------------------------------- */
