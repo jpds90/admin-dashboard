@@ -15,27 +15,32 @@
         </div>
         <nav>
             <ul>
-                <li><a href="principal.html">Início</a></li>
-                <li><a href="#noticias">Notícias</a></li>
-                <li><a href="#agenda">Agenda</a></li>
-                <li><a href="#loja">Loja</a></li>
-                <li><a href="#clube">Clube</a></li>
+                <li><a href="principal.html" data-translate>Início</a></li>
+                <li><a href="#noticias" data-translate>Notícias</a></li>
+                <li><a href="#agenda" data-translate>Agenda</a></li>
+                <li><a href="#loja" data-translate>Loja</a></li>
+                <li><a href="#clube" data-translate>Clube</a></li>
             </ul>
         </nav>
     </div>
 </header>
 
+<!-- Botões de idioma -->
+<div class="language-switcher">
+    <button id="btn-pt">🇧🇷 PT</button>
+    <button id="btn-en">🇺🇸 EN</button>
+    <button id="btn-es">🇪🇸 ES</button>
+</div>
 
 <div class="container">
     <div id="noticia" class="noticia">
-        <h2>Carregando notícia...</h2>
+        <h2 data-translate>Carregando notícia...</h2>
     </div>
-    <a href="principal.html" class="voltar">← Voltar</a>
+    <a href="principal.html" class="voltar" data-translate>← Voltar</a>
 </div>
 
 <footer>
-    <p>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
-    <div id="translate-container" style="margin-top: 10px;"></div>
+    <p data-translate>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
 </footer>
 
 <script>
@@ -44,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const noticiaId = urlParams.get("id");
 
     if (!noticiaId) {
-        document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
+        document.getElementById("noticia").innerHTML = "<p data-translate>Notícia não encontrada.</p>";
         return;
     }
 
@@ -53,35 +58,35 @@ document.addEventListener("DOMContentLoaded", async function () {
         const noticia = await response.json();
 
         if (!noticia || noticia.error) {
-            document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
+            document.getElementById("noticia").innerHTML = "<p data-translate>Notícia não encontrada.</p>";
             return;
         }
 
-        // Verificação de imagem
         const imagemSrc = noticia.imagem_large && noticia.imagem_large.trim() !== "" 
             ? noticia.imagem_large 
             : "path/to/default-image.jpg";
 
         document.getElementById("noticia").innerHTML = `
             <img src="${imagemSrc}" alt="${noticia.titulo}" class="noticia-imagem">
-            <h2>${noticia.titulo}</h2>
-            <p>${noticia.conteudo}</p>
+            <h2 data-translate>${noticia.titulo}</h2>
+            <p data-translate>${noticia.conteudo}</p>
         `;
     } catch (error) {
         console.error("Erro ao carregar notícia:", error);
-        document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
+        document.getElementById("noticia").innerHTML = "<p data-translate>Erro ao carregar notícia.</p>";
     }
-            // Carregar Logo
-        try {
-            const logoResponse = await fetch("/api/logo");
-            const logoData = await logoResponse.json();
 
-            if (logoData.logo_url) {
-                document.getElementById("logo-img").src = logoData.logo_url;
-            }
-        } catch (error) {
-            console.error("Erro ao carregar a logo:", error);
+    // Carregar Logo
+    try {
+        const logoResponse = await fetch("/api/logo");
+        const logoData = await logoResponse.json();
+
+        if (logoData.logo_url) {
+            document.getElementById("logo-img").src = logoData.logo_url;
         }
+    } catch (error) {
+        console.error("Erro ao carregar a logo:", error);
+    }
 });
 </script>
 
