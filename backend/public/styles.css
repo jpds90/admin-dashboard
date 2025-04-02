@@ -51,19 +51,13 @@ nav ul li a {
     font-size: 16px;
 }
 
+nav ul li a:hover {
+    color: #007bff; /* Cor ao passar o mouse */
+}
 /* ------------------------------------- */
 /* ESTILOS ESPECÍFICOS PARA NOTICIA.HTML */
 /* ------------------------------------- */
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Espaço entre a logo e o título */
-}
 
-.logo {
-    height: 50px; /* Ajuste conforme necessário */
-    width: auto;
-}
 
 .pagina-noticia .container {
     max-width: 800px;
