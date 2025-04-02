@@ -21,8 +21,9 @@ header h1 {
 .logo-nav-container {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Garante que a logo fique à esquerda e o menu à direita */
+    justify-content: flex-start; /* Garante que a logo fique à esquerda e o menu à direita */
     padding: 10px 20px; /* Adiciona um espaçamento interno */
+    gap: 20px;
 }
 
 /* Ajusta o tamanho da logo */
@@ -95,7 +96,7 @@ nav ul li a:hover {
 }
 
 .pagina-noticia .voltar:hover {
-    background-color: #002d7a;
+    background-color: #1d9902;
 }
 
 /* ------------------------------------- */
