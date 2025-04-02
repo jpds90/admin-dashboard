@@ -33,6 +33,17 @@ app.post("/traduzir", async (req, res) => {
     }
 
     try {
+        // Verificar se a tradução já existe no banco de dados
+        const existingTranslation = await pool.query(
+            'SELECT texto_traduzido FROM traducoes WHERE texto_original = $1 AND idioma = $2',
+            [text, targetLang]
+        );
+
+        if (existingTranslation.rows.length > 0) {
+            return res.json({ text: existingTranslation.rows[0].texto_traduzido });
+        }
+
+        // Se a tradução não existir, consulta o DeepL
         const response = await fetch("https://api-free.deepl.com/v2/translate", {
             method: "POST",
             headers: {
@@ -46,12 +57,22 @@ app.post("/traduzir", async (req, res) => {
         });
 
         const data = await response.json();
-        res.json(data);
+
+        // Armazenar a tradução no banco de dados
+        const translatedText = data.translations[0].text;
+        await pool.query(
+            'INSERT INTO traducoes (texto_original, idioma, texto_traduzido) VALUES ($1, $2, $3)',
+            [text, targetLang, translatedText]
+        );
+
+        res.json({ text: translatedText });
+
     } catch (error) {
         console.error("Erro na tradução:", error);
         res.status(500).json({ error: "Erro ao conectar com o DeepL" });
     }
 });
+
 
 // 📌 tradutor cima
 
