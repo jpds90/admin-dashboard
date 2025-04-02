@@ -34,9 +34,11 @@ app.post("/traduzir", async (req, res) => {
 
     try {
         // 1. Verificar se a tradução já existe no banco de dados
+        console.log(`🔍 Verificando tradução no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
+
         const existingTranslation = await pool.query(
             'SELECT texto_traduzido FROM traducoes WHERE texto_original = $1 AND idioma = $2',
-            [text, targetLang]
+            [text.trim(), targetLang]
         );
 
         if (existingTranslation.rows.length > 0) {
@@ -64,13 +66,14 @@ app.post("/traduzir", async (req, res) => {
 
         // 3. Armazenar a tradução no banco de dados para futuras consultas
         const translatedText = data.translations[0].text;
+
+        console.log(`🌍 Tradução obtida da API e salva no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
+        
         await pool.query(
             'INSERT INTO traducoes (texto_original, idioma, texto_traduzido) VALUES ($1, $2, $3)',
             [text, targetLang, translatedText]
         );
 
-        console.log(`🌍 Tradução obtida da API e salva no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
-        
         // 4. Retornar a tradução para o frontend
         res.json({ text: translatedText });
 
@@ -79,6 +82,7 @@ app.post("/traduzir", async (req, res) => {
         res.status(500).json({ error: "Erro ao conectar com o DeepL" });
     }
 });
+
 
 
 
