@@ -33,18 +33,21 @@ app.post("/traduzir", async (req, res) => {
     }
 
     try {
-        // Verificar se a tradução já existe no banco de dados
+        // 1. Verificar se a tradução já existe no banco de dados
         const existingTranslation = await pool.query(
             'SELECT texto_traduzido FROM traducoes WHERE texto_original = $1 AND idioma = $2',
             [text, targetLang]
         );
 
-        // Se já existe a tradução no banco, retorna ela
         if (existingTranslation.rows.length > 0) {
+            // Caso a tradução já exista no banco, retorna ela diretamente
+            console.log(`🌍 Tradução encontrada no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
             return res.json({ text: existingTranslation.rows[0].texto_traduzido });
         }
 
-        // Se a tradução não existir, consulta o DeepL
+        // 2. Caso a tradução não esteja no banco, fazer a requisição para a API do DeepL
+        console.log(`🔄 Tradução não encontrada no banco, consultando a API do DeepL para o texto: "${text}" no idioma ${targetLang}`);
+
         const response = await fetch("https://api-free.deepl.com/v2/translate", {
             method: "POST",
             headers: {
@@ -59,14 +62,16 @@ app.post("/traduzir", async (req, res) => {
 
         const data = await response.json();
 
-        // Armazenar a tradução no banco de dados
+        // 3. Armazenar a tradução no banco de dados para futuras consultas
         const translatedText = data.translations[0].text;
         await pool.query(
             'INSERT INTO traducoes (texto_original, idioma, texto_traduzido) VALUES ($1, $2, $3)',
             [text, targetLang, translatedText]
         );
 
-        // Retornar a tradução para o frontend
+        console.log(`🌍 Tradução obtida da API e salva no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
+        
+        // 4. Retornar a tradução para o frontend
         res.json({ text: translatedText });
 
     } catch (error) {
@@ -74,6 +79,7 @@ app.post("/traduzir", async (req, res) => {
         res.status(500).json({ error: "Erro ao conectar com o DeepL" });
     }
 });
+
 
 
 
