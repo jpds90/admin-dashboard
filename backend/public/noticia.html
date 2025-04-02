@@ -61,11 +61,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             ? noticia.imagem_large 
             : "path/to/default-image.jpg";
 
-        document.getElementById("noticia").innerHTML = `
+        // Atualiza o conteúdo da notícia
+        const noticiaElement = document.getElementById("noticia");
+        noticiaElement.innerHTML = `
             <img src="${imagemSrc}" alt="${noticia.titulo}" class="noticia-imagem">
             <h2 data-translate>${noticia.titulo}</h2>
             <p data-translate>${noticia.conteudo}</p>
         `;
+
+        // Agora, traduza o conteúdo dinâmico após ele ser carregado
+        await translatePage(localStorage.getItem("selectedLanguage") || "pt");
+
     } catch (error) {
         console.error("Erro ao carregar notícia:", error);
         document.getElementById("noticia").innerHTML = "<p data-translate>Erro ao carregar notícia.</p>";
@@ -83,6 +89,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Erro ao carregar a logo:", error);
     }
 });
+
 </script>
 <script src="translate.js"></script>
 
