@@ -47,11 +47,19 @@ async function translatePage(targetLang) {
 document.addEventListener("DOMContentLoaded", function () {
     const dropdown = document.getElementById("language-dropdown");
 
+    // 🟢 Verifica se há um idioma salvo no localStorage
+    const savedLang = localStorage.getItem("selectedLanguage") || "pt";
+    dropdown.value = savedLang;
+    translatePage(savedLang); // Traduz automaticamente ao carregar a página
+
+    // 🟡 Evento para mudar o idioma quando o usuário selecionar no dropdown
     dropdown.addEventListener("change", function () {
         const selectedLang = dropdown.value;
-        translatePage(selectedLang);
+        localStorage.setItem("selectedLanguage", selectedLang); // Salva no localStorage
+        translatePage(selectedLang); // Traduz a página
     });
 
     console.log("✅ Seletor de idioma carregado com sucesso!");
 });
+
 
