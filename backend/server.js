@@ -22,6 +22,39 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "principal.html"));
 });
 
+// 📌 tradutor Abaixo
+const DEEPL_API_KEY = process.env.DEEPL_API_KEY; // Chave salva como variável de ambiente
+
+app.post("/traduzir", async (req, res) => {
+    const { text, targetLang } = req.body;
+
+    if (!text || !targetLang) {
+        return res.status(400).json({ error: "Texto e idioma de destino são obrigatórios" });
+    }
+
+    try {
+        const response = await fetch("https://api-free.deepl.com/v2/translate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `DeepL-Auth-Key ${DEEPL_API_KEY}`
+            },
+            body: new URLSearchParams({
+                "text": text,
+                "target_lang": targetLang
+            })
+        });
+
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error("Erro na tradução:", error);
+        res.status(500).json({ error: "Erro ao conectar com o DeepL" });
+    }
+});
+
+// 📌 tradutor cima
+
 
 // 📌 Configuração do PostgreSQL
 const pool = new Pool({
