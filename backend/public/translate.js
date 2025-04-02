@@ -25,7 +25,7 @@ async function translateText(text, targetLang) {
 async function translatePage(targetLang) {
     console.log("🔄 Traduzindo página para:", targetLang);
 
-    const elements = document.querySelectorAll("[data-translate]"); // Seleciona os elementos com data-translate
+    const elements = document.querySelectorAll("[data-translate]");
 
     for (const el of elements) {
         const originalText = el.innerText.trim();
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    function translatePage(lang) {
+    function applyTranslation(lang) {
         document.querySelectorAll("[data-translate]").forEach(element => {
             const text = element.innerText.trim();
             if (translations[lang] && translations[lang][text]) {
@@ -113,16 +113,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // 🔹 Garante que o idioma salvo seja aplicado em todas as páginas
     const savedLang = localStorage.getItem("selectedLanguage") || "pt";
-    document.getElementById("language-dropdown").value = savedLang;
-    translatePage(savedLang);
+    
+    const languageDropdown = document.getElementById("language-dropdown");
+    if (languageDropdown) {
+        languageDropdown.value = savedLang;
+        languageDropdown.addEventListener("change", function () {
+            const selectedLang = this.value;
+            localStorage.setItem("selectedLanguage", selectedLang);
+            applyTranslation(selectedLang);
+        });
+    }
 
-    document.getElementById("language-dropdown").addEventListener("change", function () {
-        const selectedLang = this.value;
-        localStorage.setItem("selectedLanguage", selectedLang);
-        translatePage(selectedLang);
-    });
+    // 🔹 Aplica a tradução automaticamente ao carregar cada página
+    applyTranslation(savedLang);
 });
-
-
-
