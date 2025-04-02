@@ -1,54 +1,38 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const translateContainer = document.getElementById("translate-container");
-    translateContainer.innerHTML = `
-<button class="notranslate" onclick="toggleTranslateDropdown()" style="background-color: #e0f9e0; color: #1b5e20; padding: 10px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-    🌍 <span id="selected-lang">PT</span> ▼
-</button>
+const apiKey = "4e4bfe98-e48a-4c0e-84f2-36ab6717b653:fx"; // ⚠️ Não compartilhe essa chave!
+const url = "https://api-free.deepl.com/v2/translate";
 
-<div id="translate-dropdown" style="display: none; position: absolute; bottom: 40px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px;">
-    <button class="notranslate" onclick="changeLanguage('pt')">PT</button>
-    <button class="notranslate" onclick="changeLanguage('en')">EN</button>
-    <button class="notranslate" onclick="changeLanguage('es')">ES</button>
-    <button class="notranslate" onclick="changeLanguage('fr')">FR</button>
-</div>
+// Função para traduzir um texto
+async function translateText(text, targetLang) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `DeepL-Auth-Key ${apiKey}`
+        },
+        body: new URLSearchParams({
+            "text": text,
+            "target_lang": targetLang
+        })
+    });
 
-        <div id="google_translate_element" style="display: none;"></div>
-    `;
-
-    // Carregar o script do Google Translate
-    const script = document.createElement("script");
-    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    script.async = true;
-    document.body.appendChild(script);
-
-    // Esperar o carregamento completo do Google Translate
-script.onload = function () {
-    setTimeout(() => {
-        const translateBanner = document.querySelector('.goog-te-banner-frame');
-        if (translateBanner) {
-            translateBanner.style.display = 'none';
-        }
-        document.body.style.top = "0px";
-    }, 500); // Pequeno delay para garantir que o banner já foi carregado
-};
-
-});
-
-function googleTranslateElementInit() {
-    new google.translate.TranslateElement({ pageLanguage: "pt" }, "google_translate_element");
+    const data = await response.json();
+    return data.translations[0].text;
 }
 
-function changeLanguage(langCode) {
-    document.getElementById("selected-lang").innerText = langCode.toUpperCase();
-    const googleFrame = document.querySelector(".goog-te-combo");
-    if (googleFrame) {
-        googleFrame.value = langCode;
-        googleFrame.dispatchEvent(new Event("change"));
+// Função para traduzir toda a página
+async function translatePage(lang) {
+    const elementsToTranslate = document.querySelectorAll("[data-translate]");
+
+    for (const element of elementsToTranslate) {
+        const originalText = element.textContent;
+        const translatedText = await translateText(originalText, lang);
+        element.textContent = translatedText;
     }
-    document.getElementById("translate-dropdown").style.display = "none";
 }
 
-function toggleTranslateDropdown() {
-    const dropdown = document.getElementById("translate-dropdown");
-    dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
-}
+// Adiciona eventos aos botões de troca de idioma
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("btn-pt")?.addEventListener("click", () => translatePage("PT"));
+    document.getElementById("btn-en")?.addEventListener("click", () => translatePage("EN"));
+    document.getElementById("btn-es")?.addEventListener("click", () => translatePage("ES"));
+});
