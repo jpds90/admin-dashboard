@@ -39,6 +39,7 @@ app.post("/traduzir", async (req, res) => {
             [text, targetLang]
         );
 
+        // Se já existe a tradução no banco, retorna ela
         if (existingTranslation.rows.length > 0) {
             return res.json({ text: existingTranslation.rows[0].texto_traduzido });
         }
@@ -65,6 +66,7 @@ app.post("/traduzir", async (req, res) => {
             [text, targetLang, translatedText]
         );
 
+        // Retornar a tradução para o frontend
         res.json({ text: translatedText });
 
     } catch (error) {
@@ -72,6 +74,7 @@ app.post("/traduzir", async (req, res) => {
         res.status(500).json({ error: "Erro ao conectar com o DeepL" });
     }
 });
+
 
 
 // 📌 tradutor cima
