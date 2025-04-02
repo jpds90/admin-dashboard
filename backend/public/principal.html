@@ -8,7 +8,6 @@
 </head>
 <body class="pagina-principal">
 
-
 <header>
     <div class="logo-nav-container">
         <div class="logo-container">
@@ -16,11 +15,11 @@
         </div>
         <nav>
             <ul>
-                <li><a href="principal.html">Início</a></li>
-                <li><a href="#noticias">Notícias</a></li>
-                <li><a href="#agenda">Agenda</a></li>
-                <li><a href="#loja">Loja</a></li>
-                <li><a href="#clube">Clube</a></li>
+                <li><a href="principal.html" data-translate>Início</a></li>
+                <li><a href="#noticias" data-translate>Notícias</a></li>
+                <li><a href="#agenda" data-translate>Agenda</a></li>
+                <li><a href="#loja" data-translate>Loja</a></li>
+                <li><a href="#clube" data-translate>Clube</a></li>
             </ul>
         </nav>
     </div>
@@ -28,20 +27,21 @@
 
 <section id="destaques">
     <div id="banner-container">
-        <p>Carregando banners...</p>
+        <p data-translate>Carregando banners...</p>
     </div>
 </section>
 
 <section id="noticias">
-    <h2>Últimas Notícias</h2>
+    <h2 data-translate>Últimas Notícias</h2>
     <div id="noticias-container">
-        <p>Carregando notícias...</p>
+        <p data-translate>Carregando notícias...</p>
     </div>
 </section>
 
 <footer>
     <p data-translate>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
 
+    <!-- 🔹 Novo seletor de idioma estilizado -->
     <div class="language-selector">
         <span>🌐</span>
         <select id="language-dropdown">
@@ -54,92 +54,77 @@
     </div>
 </footer>
 
-
 <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-        // Carregar Banners do Backend
-        try {
-            const bannersResponse = await fetch("/api/banners");
-            const banners = await bannersResponse.json();
+document.addEventListener("DOMContentLoaded", async function () {
+    // 🔹 Pega o idioma salvo e traduz automaticamente
+    const savedLang = localStorage.getItem("selectedLanguage") || "pt";
+    document.getElementById("language-dropdown").value = savedLang;
+    translatePage(savedLang);
 
-            const bannerContainer = document.getElementById("banner-container");
-            bannerContainer.innerHTML = ""; // Limpa antes de adicionar os banners
-
-            if (banners.length === 0) {
-                bannerContainer.innerHTML = "<p>Nenhum banner disponível.</p>";
-            } else {
-                banners.forEach((banner, index) => {
-                    const bannerElement = document.createElement("div");
-                    bannerElement.classList.add("carousel-item");
-                    if (index === 0) bannerElement.style.transform = "translateX(0%)";
-                    bannerElement.innerHTML = `<img src="${banner.banners_url}" alt="Banner">`;
-                    bannerContainer.appendChild(bannerElement);
-                });
-
-                iniciarCarrossel(); // Iniciar animação do carrossel
-            }
-        } catch (error) {
-            console.error("Erro ao carregar banners:", error);
-            document.getElementById("banner-container").innerHTML = "<p>Erro ao carregar banners.</p>";
-        }
-
-        // Carregar Notícias
-        try {
-            const noticiasResponse = await fetch("/noticias");
-            const noticias = await noticiasResponse.json();
-
-            const noticiasContainer = document.getElementById("noticias-container");
-            noticiasContainer.innerHTML = ""; // Limpa antes de adicionar
-
-            if (noticias.length === 0) {
-                noticiasContainer.innerHTML = "<p>Nenhuma notícia disponível.</p>";
-            } else {
-                noticias.forEach(noticia => {
-                    const noticiaElement = document.createElement("div");
-                    noticiaElement.classList.add("noticia");
-
-                    noticiaElement.innerHTML = `
-                        <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
-                        <h3>${noticia.titulo}</h3>
-                        <p>${noticia.conteudo.substring(0, 100)}...</p>
-                        <a href="noticia.html?id=${noticia.id}">Leia mais</a>
-                    `;
-
-                    noticiasContainer.appendChild(noticiaElement);
-                });
-            }
-        } catch (error) {
-            console.error("Erro ao carregar notícias:", error);
-            document.getElementById("noticias-container").innerHTML = "<p>Erro ao carregar notícias.</p>";
-        }
-
-        // Carregar Logo
-        try {
-            const logoResponse = await fetch("/api/logo");
-            const logoData = await logoResponse.json();
-
-            if (logoData.logo_url) {
-                document.getElementById("logo-img").src = logoData.logo_url;
-            }
-        } catch (error) {
-            console.error("Erro ao carregar a logo:", error);
-        }
+    document.getElementById("language-dropdown").addEventListener("change", function () {
+        const selectedLang = this.value;
+        localStorage.setItem("selectedLanguage", selectedLang);
+        translatePage(selectedLang);
     });
 
-    function iniciarCarrossel() {
-        let index = 0;
-        const banners = document.querySelectorAll(".carousel-item");
+    // 🔹 Carregar banners do backend
+    try {
+        const bannersResponse = await fetch("/api/banners");
+        const banners = await bannersResponse.json();
 
-        setInterval(() => {
-            banners.forEach((banner, i) => {
-                banner.style.transform = `translateX(${(i - index) * 100}%)`;
-            });
+        const bannerContainer = document.getElementById("banner-container");
+        bannerContainer.innerHTML = banners.length ? banners.map(banner => 
+            `<div class="carousel-item"><img src="${banner.banners_url}" alt="Banner"></div>`).join("") 
+            : "<p data-translate>Nenhum banner disponível.</p>";
 
-            index = (index + 1) % banners.length;
-        }, 3000); // Troca a cada 3 segundos
+        if (banners.length) iniciarCarrossel();
+    } catch (error) {
+        console.error("Erro ao carregar banners:", error);
     }
 
+    // 🔹 Carregar notícias
+    try {
+        const noticiasResponse = await fetch("/noticias");
+        const noticias = await noticiasResponse.json();
+
+        const noticiasContainer = document.getElementById("noticias-container");
+        noticiasContainer.innerHTML = noticias.length ? noticias.map(noticia => 
+            `<div class="noticia">
+                <img src="${noticia.imagem_url}" alt="${noticia.titulo}">
+                <h3 data-translate>${noticia.titulo}</h3>
+                <p data-translate>${noticia.conteudo.substring(0, 100)}...</p>
+                <a href="noticia.html?id=${noticia.id}" data-translate>Leia mais</a>
+            </div>`).join("") 
+            : "<p data-translate>Nenhuma notícia disponível.</p>";
+
+    } catch (error) {
+        console.error("Erro ao carregar notícias:", error);
+    }
+
+    // 🔹 Carregar logo
+    try {
+        const logoResponse = await fetch("/api/logo");
+        const logoData = await logoResponse.json();
+        if (logoData.logo_url) document.getElementById("logo-img").src = logoData.logo_url;
+    } catch (error) {
+        console.error("Erro ao carregar a logo:", error);
+    }
+});
+
+// 🔹 Função do carrossel
+function iniciarCarrossel() {
+    let index = 0;
+    const banners = document.querySelectorAll(".carousel-item");
+
+    setInterval(() => {
+        banners.forEach((banner, i) => {
+            banner.style.transform = `translateX(${(i - index) * 100}%)`;
+        });
+        index = (index + 1) % banners.length;
+    }, 3000);
+}
 </script>
 
+<script src="translate.js"></script>
 </body>
 </html>
