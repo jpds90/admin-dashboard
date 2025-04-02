@@ -17,10 +17,27 @@ header h1 {
     margin: 0;
 }
 
+/* Estiliza o header para alinhar a logo e o menu na mesma linha */
+.logo-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Garante que a logo fique à esquerda e o menu à direita */
+    padding: 10px 20px; /* Adiciona um espaçamento interno */
+}
+
+/* Ajusta o tamanho da logo */
+.logo-container img {
+    height: 50px; /* Ajuste conforme necessário */
+    width: auto;
+}
+
+/* Estiliza a navegação */
 nav ul {
-    list-style: none;
+    display: flex;
+    gap: 20px; /* Espaço entre os itens do menu */
+    list-style: none; /* Remove os marcadores da lista */
     padding: 0;
-    text-align: center;
+    margin: 0;
 }
 
 nav ul li {
