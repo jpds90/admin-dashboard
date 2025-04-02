@@ -38,9 +38,19 @@ async function translatePage(targetLang) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("translate-container").innerHTML = `
+    const translateContainer = document.getElementById("translate-container");
+
+    if (!translateContainer) {
+        console.error("❌ Elemento #translate-container não encontrado!");
+        return;
+    }
+
+    translateContainer.innerHTML = `
         <button onclick="translatePage('en')">EN</button>
         <button onclick="translatePage('es')">ES</button>
         <button onclick="translatePage('fr')">FR</button>
     `;
+
+    console.log("✅ Contêiner de tradução carregado com sucesso!");
 });
+
