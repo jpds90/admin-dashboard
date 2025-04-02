@@ -22,13 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.appendChild(script);
 
     // Esperar o carregamento completo do Google Translate
-    script.onload = function () {
-        // Ocultar o banner do Google Tradutor
+script.onload = function () {
+    setTimeout(() => {
         const translateBanner = document.querySelector('.goog-te-banner-frame');
         if (translateBanner) {
             translateBanner.style.display = 'none';
         }
-    };
+        document.body.style.top = "0px";
+    }, 500); // Pequeno delay para garantir que o banner já foi carregado
+};
+
 });
 
 function googleTranslateElementInit() {
