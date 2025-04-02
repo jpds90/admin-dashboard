@@ -40,9 +40,20 @@
 </section>
 
 <footer>
-    <p>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
-    <div id="translate-container"></div>
+    <p data-translate>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
+
+    <div class="language-selector">
+        <span>🌐</span>
+        <select id="language-dropdown">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
 </footer>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", async function () {
@@ -128,15 +139,6 @@
         }, 3000); // Troca a cada 3 segundos
     }
 
-    // Script para carregar o tradutor
-    function loadTranslateScript() {
-        const script = document.createElement("script");
-        script.src = "/translate.jsx";
-        script.async = true;
-        document.body.appendChild(script);
-    }
-
-    loadTranslateScript();
 </script>
 
 </body>
