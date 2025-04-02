@@ -15,7 +15,6 @@ async function translateText(text, targetLang) {
         }
 
         const data = await response.json();
-        console.log("✅ Tradução recebida:", data.translations[0].text);
         return data.translations[0].text;
     } catch (error) {
         console.error("❌ Erro ao traduzir:", error);
@@ -26,31 +25,29 @@ async function translateText(text, targetLang) {
 async function translatePage(targetLang) {
     console.log("🔄 Traduzindo página para:", targetLang);
 
-    const elements = document.querySelectorAll("[data-translate]"); // Elementos a traduzir
+    const elements = document.querySelectorAll("[data-translate]"); // Seleciona os elementos com data-translate
 
     for (const el of elements) {
-        const originalText = el.innerText;
+        const originalText = el.innerText.trim();
+        if (!originalText) continue;
+
         el.setAttribute("data-original", originalText); // Salva o texto original
 
-        const translatedText = await translateText(originalText, targetLang);
-        el.innerText = translatedText;
+        try {
+            const translatedText = await translateText(originalText, targetLang);
+            el.innerText = translatedText;
+        } catch (error) {
+            console.error("❌ Erro ao traduzir o elemento:", el, error);
+        }
     }
+
+    console.log("✅ Tradução aplicada com sucesso!");
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const translateContainer = document.getElementById("translate-container");
+    document.getElementById("btn-pt").addEventListener("click", () => translatePage("pt"));
+    document.getElementById("btn-en").addEventListener("click", () => translatePage("en"));
+    document.getElementById("btn-es").addEventListener("click", () => translatePage("es"));
 
-    if (!translateContainer) {
-        console.error("❌ Elemento #translate-container não encontrado!");
-        return;
-    }
-
-    translateContainer.innerHTML = `
-        <button onclick="translatePage('en')">EN</button>
-        <button onclick="translatePage('es')">ES</button>
-        <button onclick="translatePage('fr')">FR</button>
-    `;
-
-    console.log("✅ Contêiner de tradução carregado com sucesso!");
+    console.log("✅ Botões de tradução adicionados com sucesso!");
 });
-
