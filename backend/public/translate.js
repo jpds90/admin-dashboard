@@ -24,9 +24,11 @@ async function translatePage(lang) {
     const elementsToTranslate = document.querySelectorAll("[data-translate]");
 
     for (const element of elementsToTranslate) {
-        const originalText = element.textContent;
-        const translatedText = await translateText(originalText, lang);
-        element.textContent = translatedText;
+        const originalText = element.textContent.trim();
+        if (originalText) {
+            const translatedText = await translateText(originalText, lang);
+            element.textContent = translatedText;
+        }
     }
 }
 
