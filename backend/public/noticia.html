@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notícia - Safor Club de Fútbol Gandia</title>
     <link rel="stylesheet" href="styles.css">
-
 </head>
-<body>
+<body class="pagina-noticia">
 
 <header>
     <h1>Safor Club de Fútbol Gandia</h1>
@@ -23,7 +22,7 @@
 </header>
 
 <div class="container">
-    <div id="noticia" class="pagina-noticia">
+    <div id="noticia" class="noticia">
         <h2>Carregando notícia...</h2>
     </div>
     <a href="principal.html" class="voltar">← Voltar</a>
@@ -35,7 +34,6 @@
 </footer>
 
 <script>
-// No seu script de carregamento da notícia:
 document.addEventListener("DOMContentLoaded", async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const noticiaId = urlParams.get("id");
@@ -49,16 +47,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         const response = await fetch(`/noticias/${noticiaId}`);
         const noticia = await response.json();
 
-        if (noticia.error) {
+        if (!noticia || noticia.error) {
             document.getElementById("noticia").innerHTML = "<p>Notícia não encontrada.</p>";
             return;
         }
 
-        // Imagem com fallback caso a URL esteja vazia
-        const imagem = noticia.imagem_large || "path/to/default-image.jpg";
-        
+        // Verificação de imagem
+        const imagemSrc = noticia.imagem_large && noticia.imagem_large.trim() !== "" 
+            ? noticia.imagem_large 
+            : "path/to/default-image.jpg";
+
         document.getElementById("noticia").innerHTML = `
-            <img src="${imagem}" alt="${noticia.titulo}">
+            <img src="${imagemSrc}" alt="${noticia.titulo}" class="noticia-imagem">
             <h2>${noticia.titulo}</h2>
             <p>${noticia.conteudo}</p>
         `;
@@ -67,7 +67,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("noticia").innerHTML = "<p>Erro ao carregar notícia.</p>";
     }
 });
-
 </script>
 
 <script src="translate.js"></script>
