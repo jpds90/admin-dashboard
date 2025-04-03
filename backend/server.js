@@ -38,7 +38,7 @@ app.post("/traduzir", async (req, res) => {
 
     try {
         // 1. Verificar se a tradução já existe no banco de dados
-        console.log(🔍 Verificando tradução no banco de dados para o texto: "${text}" no idioma ${targetLang});
+        console.log(`🔍 Verificando tradução no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
 
         const existingTranslation = await pool.query(
             'SELECT texto_traduzido FROM traducoes WHERE texto_original = $1 AND idioma = $2',
@@ -47,18 +47,18 @@ app.post("/traduzir", async (req, res) => {
 
         if (existingTranslation.rows.length > 0) {
             // Caso a tradução já exista no banco, retorna ela diretamente
-            console.log(🌍 Tradução encontrada no banco de dados para o texto: "${text}" no idioma ${targetLang});
+            console.log(`🌍 Tradução encontrada no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
             return res.json({ text: existingTranslation.rows[0].texto_traduzido });
         }
 
         // 2. Caso a tradução não esteja no banco, fazer a requisição para a API do DeepL
-        console.log(🔄 Tradução não encontrada no banco, consultando a API do DeepL para o texto: "${text}" no idioma ${targetLang});
+        console.log(`🔄 Tradução não encontrada no banco, consultando a API do DeepL para o texto: "${text}" no idioma ${targetLang}`);
 
         const response = await fetch("https://api-free.deepl.com/v2/translate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": DeepL-Auth-Key ${DEEPL_API_KEY}
+                "Authorization": `DeepL-Auth-Key ${DEEPL_API_KEY}`
             },
             body: new URLSearchParams({
                 "text": text,
@@ -71,7 +71,7 @@ app.post("/traduzir", async (req, res) => {
         // 3. Armazenar a tradução no banco de dados para futuras consultas
         const translatedText = data.translations[0].text;
 
-        console.log(🌍 Tradução obtida da API e salva no banco de dados para o texto: "${text}" no idioma ${targetLang});
+        console.log(`🌍 Tradução obtida da API e salva no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
         
         await pool.query(
             'INSERT INTO traducoes (texto_original, idioma, texto_traduzido) VALUES ($1, $2, $3)',
@@ -86,6 +86,7 @@ app.post("/traduzir", async (req, res) => {
         res.status(500).json({ error: "Erro ao conectar com o DeepL" });
     }
 });
+
 
 
 
