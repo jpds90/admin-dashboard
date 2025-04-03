@@ -317,6 +317,39 @@ app.get("/api/banners", async (req, res) => {
   }
 });
 
+app.delete("/api/banners/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Buscar a URL do banner no banco
+    const result = await pool.query(
+      "SELECT banners_url FROM saforgandia_banners WHERE id = $1",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Banner não encontrado" });
+    }
+
+    const bannerUrl = result.rows[0].banners_url;
+
+    // Extrair o public_id do Cloudinary (pegar apenas a parte do nome do arquivo)
+    const publicId = bannerUrl.split("/").pop().split(".")[0];
+
+    // Excluir do Cloudinary
+    await cloudinary.uploader.destroy(`saforgandia/banners/${publicId}`);
+
+    // Remover do banco de dados
+    await pool.query("DELETE FROM saforgandia_banners WHERE id = $1", [id]);
+
+    res.json({ message: "Banner excluído com sucesso" });
+
+  } catch (error) {
+    console.error("Erro ao excluir o banner:", error);
+    res.status(500).json({ error: "Erro ao excluir o banner" });
+  }
+});
+
 
 // 🚀 Iniciar o servidor
 app.listen(port, () => {
