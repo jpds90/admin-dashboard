@@ -352,6 +352,88 @@ app.delete("/api/banners/:id", async (req, res) => {
 });
 
 
+// Rota para buscar todas as histórias
+app.get("/historia", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM saforgandia_historia ORDER BY data_publicacao DESC");
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Erro ao buscar histórias:", error);
+    res.status(500).json({ message: "Erro ao buscar histórias." });
+  }
+});
+
+// Rota para cadastrar uma nova história
+app.post("/historia", async (req, res) => {
+  const { titulo, conteudo, imagem_url } = req.body;
+  try {
+    const result = await pool.query(
+      "INSERT INTO saforgandia_historia (titulo, conteudo, imagem_url) VALUES ($1, $2, $3) RETURNING *",
+      [titulo, conteudo, imagem_url]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Erro ao cadastrar história:", error);
+    res.status(500).json({ message: "Erro ao cadastrar história." });
+  }
+});
+
+// Rota para editar uma história
+app.put("/historia/:id", async (req, res) => {
+  const { id } = req.params;
+  const { titulo, conteudo, imagem_url } = req.body;
+  try {
+    const result = await pool.query(
+      "UPDATE saforgandia_historia SET titulo = $1, conteudo = $2, imagem_url = $3 WHERE id = $4 RETURNING *",
+      [titulo, conteudo, imagem_url, id]
+    );
+    if (result.rowCount > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ message: "História não encontrada." });
+    }
+  } catch (error) {
+    console.error("Erro ao editar história:", error);
+    res.status(500).json({ message: "Erro ao editar história." });
+  }
+});
+
+// Rota para excluir uma história
+app.delete("/historia/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query("DELETE FROM saforgandia_historia WHERE id = $1 RETURNING *", [id]);
+    if (result.rowCount > 0) {
+      res.status(200).json({ message: "História excluída com sucesso!" });
+    } else {
+      res.status(404).json({ message: "História não encontrada." });
+    }
+  } catch (error) {
+    console.error("Erro ao excluir história:", error);
+    res.status(500).json({ message: "Erro ao excluir história." });
+  }
+});
+
+// Rota para remover imagem de uma história (caso precise)
+app.put("/historia/:id/remover-imagem", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      "UPDATE saforgandia_historia SET imagem_url = NULL WHERE id = $1 RETURNING *",
+      [id]
+    );
+    if (result.rowCount > 0) {
+      res.status(200).json({ message: "Imagem removida com sucesso!" });
+    } else {
+      res.status(404).json({ message: "História não encontrada." });
+    }
+  } catch (error) {
+    console.error("Erro ao remover imagem:", error);
+    res.status(500).json({ message: "Erro ao remover imagem." });
+  }
+});
+
+
 // 🚀 Iniciar o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
