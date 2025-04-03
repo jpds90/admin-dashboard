@@ -113,19 +113,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🔹 Garante que o idioma salvo seja aplicado em todas as páginas
-    const savedLang = localStorage.getItem("selectedLanguage") || "pt";
-    
     const languageDropdown = document.getElementById("language-dropdown");
     if (languageDropdown) {
-        languageDropdown.value = savedLang;
         languageDropdown.addEventListener("change", function () {
             const selectedLang = this.value;
             localStorage.setItem("selectedLanguage", selectedLang);
             applyTranslation(selectedLang);
         });
     }
-
-    // 🔹 Aplica a tradução automaticamente ao carregar cada página
-    applyTranslation(savedLang);
 });
