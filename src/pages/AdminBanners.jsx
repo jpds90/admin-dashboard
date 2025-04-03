@@ -7,22 +7,25 @@ export default function AdminBanners() {
   const [banners, setBanners] = useState([]); // Lista de banners salvos
 
   // Buscar banners salvos
-  useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        const response = await fetch("https://backendsafor.onrender.com/api/banners");
-        if (!response.ok) {
-          throw new Error("Erro ao buscar banners");
-        }
-        const data = await response.json();
-        setBanners(data); // Atualiza a lista de banners
-      } catch (err) {
-        setError(err.message);
+useEffect(() => {
+  const fetchBanners = async () => {
+    try {
+      const response = await fetch("https://backendsafor.onrender.com/api/banners");
+      if (!response.ok) {
+        throw new Error("Erro ao buscar banners");
       }
-    };
+      const data = await response.json();
 
-    fetchBanners();
-  }, []); // Executa apenas na primeira renderização
+      console.log("Banners recebidos:", data); // 👈 Verifique no console
+      setBanners(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  fetchBanners();
+}, []);
+ // Executa apenas na primeira renderização
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
