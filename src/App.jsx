@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import AdminNoticias from "./pages/AdminNoticias"; // Importando a página de Administração de Notícias
-import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma notícia
+import AdminNoticias from "./pages/AdminNoticias"; 
+import NoticiaPage from "./pages/NoticiaPage"; 
 import Translate from "./components/Translate";
-import AdminLogo from "./pages/AdminLogo"; // Importe o componente correto
-import AdminBanners from "./pages/AdminBanners"; // Importe o componente correto
+import AdminLogo from "./pages/AdminLogo"; 
+import AdminBanners from "./pages/AdminBanners"; 
 import { useState } from "react";
 
 // Componente Sidebar
@@ -36,11 +36,21 @@ function Sidebar() {
 }
 
 // Componente Header
-function Header() {
+function Header({ isApiEnabled, toggleApi }) {
   return (
     <div className="bg-gray-800 text-white p-4 flex justify-between items-center">
       <h1 className="text-xl">Dashboard Admin</h1>
-      <Translate /> {/* Seletor de idioma à direita */}
+      <div className="flex items-center gap-4">
+        <Translate /> {/* Seletor de idioma */}
+        <button
+          className={`px-4 py-2 rounded ${
+            isApiEnabled ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"
+          }`}
+          onClick={toggleApi}
+        >
+          {isApiEnabled ? "Desativar API" : "Ativar API"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -52,11 +62,17 @@ function Dashboard() {
 
 // Componente principal App
 export default function App() {
+  const [isApiEnabled, setIsApiEnabled] = useState(true);
+
+  function toggleApi() {
+    setIsApiEnabled((prev) => !prev);
+  }
+
   return (
     <Router>
       <div className="flex flex-col h-screen">
-        {/* Cabeçalho com seletor de idioma à direita */}
-        <Header />
+        {/* Cabeçalho com seletor de idioma e botão de ativação/desativação da API */}
+        <Header isApiEnabled={isApiEnabled} toggleApi={toggleApi} />
 
         <div className="flex flex-1">
           {/* Sidebar (visível apenas em telas grandes) */}
@@ -69,12 +85,12 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/news" element={<AdminNoticias />} />
-              <Route path="/news/:id" element={<NoticiaPage />} /> {/* Rota para exibir uma notícia */}
+              <Route path="/news/:id" element={<NoticiaPage />} />
               <Route path="/store" element={<h2 className='p-5'>Gerenciar Loja</h2>} />
               <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
               <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
-              <Route path="/upload-logo" element={<AdminLogo />} /> {/* Nova rota adicionada */}
-              <Route path="/upload-banners" element={<AdminBanners />} /> {/* Nova rota adicionada */}
+              <Route path="/upload-logo" element={<AdminLogo />} />
+              <Route path="/upload-banners" element={<AdminBanners />} />
             </Routes>
           </div>
         </div>
