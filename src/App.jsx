@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import AdminNoticias from "./pages/AdminNoticias"; 
 import NoticiaPage from "./pages/NoticiaPage"; 
 import Translate from "./components/Translate";
 import AdminLogo from "./pages/AdminLogo"; 
 import AdminBanners from "./pages/AdminBanners"; 
-import { useState } from "react";
 
 // Componente Sidebar
 function Sidebar() {
@@ -64,8 +64,24 @@ function Dashboard() {
 export default function App() {
   const [isApiEnabled, setIsApiEnabled] = useState(true);
 
+  // Buscar estado inicial da API no backend
+  useEffect(() => {
+    fetch("/api-status")
+      .then((res) => res.json())
+      .then((data) => setIsApiEnabled(data.apiEnabled))
+      .catch((error) => console.error("Erro ao buscar status da API:", error));
+  }, []);
+
+  // Função para ativar/desativar a API
   function toggleApi() {
-    setIsApiEnabled((prev) => !prev);
+    const newState = !isApiEnabled;
+    setIsApiEnabled(newState);
+
+    fetch("/toggle-api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enabled: newState }),
+    }).catch((error) => console.error("Erro ao atualizar status da API:", error));
   }
 
   return (
@@ -86,9 +102,9 @@ export default function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/news" element={<AdminNoticias />} />
               <Route path="/news/:id" element={<NoticiaPage />} />
-              <Route path="/store" element={<h2 className='p-5'>Gerenciar Loja</h2>} />
-              <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
-              <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
+              <Route path="/store" element={<h2 className="p-5">Gerenciar Loja</h2>} />
+              <Route path="/matches" element={<h2 className="p-5">Gerenciar Jogos</h2>} />
+              <Route path="/players" element={<h2 className="p-5">Gerenciar Jogadores</h2>} />
               <Route path="/upload-logo" element={<AdminLogo />} />
               <Route path="/upload-banners" element={<AdminBanners />} />
             </Routes>
