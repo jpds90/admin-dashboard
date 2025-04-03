@@ -98,12 +98,13 @@ export default function AdminBanners() {
 
       <h3 className="text-lg font-bold mt-6">Banners Salvos</h3>
       <div className="grid grid-cols-3 gap-4 mt-2">
-        {banners.map((banner, index) => (
-          <div key={index} className="relative">
-            <img src={banner.banners_url} alt={`Banner ${index + 1}`} className="w-32 border rounded-lg" />
+        {banners.map((banner) => (
+          <div key={banner.id} className="relative p-2 border rounded-lg shadow-md">
+            <img src={banner.banners_url} alt={`Banner ${banner.id}`} className="w-32 border rounded-lg" />
+            <p className="text-sm text-gray-600 mt-1">ID: {banner.id}</p>
             <button
               onClick={() => handleDelete(banner.id)}
-              className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-lg"
+              className="mt-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg hover:bg-red-700"
             >
               Excluir
             </button>
