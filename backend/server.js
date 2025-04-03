@@ -23,18 +23,29 @@ app.get("/", (req, res) => {
 });
 
 // 📌 tradutor Abaixo
-let apiEnabled = true; // Começa ativado
+let apiEnabled = true; // Começa ativada
+
+app.get("/api-status", (req, res) => {
+  res.json({ apiEnabled });
+});
 
 app.post("/toggle-api", (req, res) => {
-    apiEnabled = req.body.enabled; // Atualiza o estado
-    res.json({ success: true, apiEnabled });
+  const { enabled } = req.body;
+  apiEnabled = enabled; // Atualiza o estado da API
+  console.log(`🔄 API ${enabled ? "ATIVADA" : "DESATIVADA"}`);
+  res.json({ message: `API ${enabled ? "ativada" : "desativada"}` });
 });
+
 
 
 
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY; // Chave salva como variável de ambiente
 
 app.post("/traduzir", async (req, res) => {
+    if (!apiEnabled) {
+        return res.status(503).json({ error: "API de tradução está desativada no momento." });
+    }
+
     const { text, targetLang } = req.body;
 
     if (!text || !targetLang) {
@@ -42,7 +53,8 @@ app.post("/traduzir", async (req, res) => {
     }
 
     try {
-        console.log(`🔍 Verificando tradução no banco de dados para "${text}" (${targetLang})`);
+        // 1. Verificar se a tradução já existe no banco de dados
+        console.log(`🔍 Verificando tradução no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
 
         const existingTranslation = await pool.query(
             'SELECT texto_traduzido FROM traducoes WHERE texto_original = $1 AND idioma = $2',
@@ -50,17 +62,12 @@ app.post("/traduzir", async (req, res) => {
         );
 
         if (existingTranslation.rows.length > 0) {
-            console.log(`✅ Tradução encontrada no banco`);
+            console.log(`🌍 Tradução encontrada no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
             return res.json({ text: existingTranslation.rows[0].texto_traduzido });
         }
 
-        // 🔴 Se a API estiver desativada, não tenta buscar no DeepL
-        if (!apiEnabled) {
-            console.log(`❌ API desativada. Tradução não encontrada no banco.`);
-            return res.json({ error: "Tradução não encontrada no banco e API está desativada." });
-        }
-
-        console.log(`🌍 Tradução não encontrada no banco. Buscando no DeepL...`);
+        // 2. Caso a tradução não esteja no banco, fazer a requisição para a API do DeepL
+        console.log(`🔄 Tradução não encontrada no banco, consultando a API do DeepL para o texto: "${text}" no idioma ${targetLang}`);
 
         const response = await fetch("https://api-free.deepl.com/v2/translate", {
             method: "POST",
@@ -75,15 +82,17 @@ app.post("/traduzir", async (req, res) => {
         });
 
         const data = await response.json();
+
+        // 3. Armazenar a tradução no banco de dados para futuras consultas
         const translatedText = data.translations[0].text;
-
-        console.log(`✅ Tradução obtida da API e salva no banco`);
-
+        console.log(`🌍 Tradução obtida da API e salva no banco de dados para o texto: "${text}" no idioma ${targetLang}`);
+        
         await pool.query(
             'INSERT INTO traducoes (texto_original, idioma, texto_traduzido) VALUES ($1, $2, $3)',
             [text, targetLang, translatedText]
         );
 
+        // 4. Retornar a tradução para o frontend
         res.json({ text: translatedText });
 
     } catch (error) {
@@ -91,6 +100,7 @@ app.post("/traduzir", async (req, res) => {
         res.status(500).json({ error: "Erro ao conectar com o DeepL" });
     }
 });
+
 
 
 
