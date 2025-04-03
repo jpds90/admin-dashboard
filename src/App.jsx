@@ -4,6 +4,7 @@ import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma no
 import Translate from "./components/Translate";
 import AdminLogo from "./pages/AdminLogo"; // Importe o componente correto
 import AdminBanners from "./pages/AdminBanners"; // Importe o componente correto
+import AdminBanners from "./pages/AdminHitoria"; // Importe o componente correto
 import { useState } from "react";
 
 // Componente Sidebar
@@ -14,6 +15,9 @@ function Sidebar() {
       <ul>
         <li className="mb-2 hover:bg-gray-700 p-2 rounded">
           <Link to="/news">Notícias</Link>
+        </li>
+        <li className="mb-2 hover:bg-gray-700 p-2 rounded">
+          <Link to="/club">Quem Somos</Link>
         </li>
         <li className="mb-2 hover:bg-gray-700 p-2 rounded">
           <Link to="/store">Loja</Link>
@@ -70,6 +74,7 @@ export default function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/news" element={<AdminNoticias />} />
               <Route path="/news/:id" element={<NoticiaPage />} /> {/* Rota para exibir uma notícia */}
+              <Route path="/club" element={<AdminHitoria />} />
               <Route path="/store" element={<h2 className='p-5'>Gerenciar Loja</h2>} />
               <Route path="/matches" element={<h2 className='p-5'>Gerenciar Jogos</h2>} />
               <Route path="/players" element={<h2 className='p-5'>Gerenciar Jogadores</h2>} />
