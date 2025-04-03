@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Adminbanners() {
+export default function AdminBanners() {
   const [imageUrl, setImageUrl] = useState(""); // Para exibir a imagem depois do upload
   const [uploading, setUploading] = useState(false); // Estado para indicar upload em andamento
   const [error, setError] = useState(null); // Estado para mensagens de erro
@@ -60,6 +60,27 @@ export default function Adminbanners() {
     }
   };
 
+  // Função para excluir um banner
+  const handleDelete = async (id) => {
+    if (!window.confirm("Tem certeza que deseja excluir este banner?")) return;
+
+    try {
+      const response = await fetch(`https://backendsafor.onrender.com/api/banners/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir o banner");
+      }
+
+      setBanners(banners.filter((banner) => banner.id !== id)); // Atualiza a lista
+      alert("Banner excluído com sucesso!");
+    } catch (err) {
+      alert("Erro ao excluir o banner.");
+      console.error("Erro ao excluir:", err);
+    }
+  };
+
   return (
     <div className="p-5">
       <h2 className="text-xl font-bold mb-4">Upload de Banner</h2>
@@ -78,7 +99,15 @@ export default function Adminbanners() {
       <h3 className="text-lg font-bold mt-6">Banners Salvos</h3>
       <div className="grid grid-cols-3 gap-4 mt-2">
         {banners.map((banner, index) => (
-          <img key={index} src={banner.banners_url} alt={`Banner ${index + 1}`} className="w-32 border rounded-lg" />
+          <div key={index} className="relative">
+            <img src={banner.banners_url} alt={`Banner ${index + 1}`} className="w-32 border rounded-lg" />
+            <button
+              onClick={() => handleDelete(banner.id)}
+              className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-lg"
+            >
+              Excluir
+            </button>
+          </div>
         ))}
       </div>
     </div>
