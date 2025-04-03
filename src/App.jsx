@@ -4,7 +4,7 @@ import NoticiaPage from "./pages/NoticiaPage"; // Importando a página de uma no
 import Translate from "./components/Translate";
 import AdminLogo from "./pages/AdminLogo"; // Importe o componente correto
 import AdminBanners from "./pages/AdminBanners"; // Importe o componente correto
-import AdminBanners from "./pages/AdminHitoria"; // Importe o componente correto
+import AdminHitoria from "./pages/AdminHitoria"; // Importe o componente correto
 import { useState } from "react";
 
 // Componente Sidebar
