@@ -1,5 +1,6 @@
 const backendUrl = "https://backendsafor.onrender.com/traduzir";
 
+// Função de tradução do texto (API backend)
 async function translateText(text, targetLang) {
     console.log("🔄 Traduzindo:", text, "->", targetLang);
 
@@ -22,6 +23,7 @@ async function translateText(text, targetLang) {
     }
 }
 
+// Função para aplicar a tradução na página
 async function translatePage(targetLang) {
     console.log("🔄 Traduzindo página para:", targetLang);
 
@@ -37,14 +39,8 @@ async function translatePage(targetLang) {
 
         try {
             // Enviar o texto para o backend e pegar a tradução
-            const translatedText = await fetch(`/traduzir`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: originalText, targetLang })
-            }).then(res => res.json());
-
-            // Substituir o texto na página com a tradução
-            el.innerText = translatedText.text;
+            const translatedText = await translateText(originalText, targetLang);
+            el.innerText = translatedText;
         } catch (error) {
             console.error("❌ Erro ao traduzir o elemento:", el, error);
         }
@@ -53,90 +49,23 @@ async function translatePage(targetLang) {
     console.log("✅ Tradução aplicada com sucesso!");
 }
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
-    const translations = {
-        en: {
-            "Início": "Home",
-            "Notícias": "News",
-            "Agenda": "Schedule",
-            "Loja": "Shop",
-            "Clube": "Club",
-            "Carregando banners...": "Loading banners...",
-            "Últimas Notícias": "Latest News",
-            "Carregando notícias...": "Loading news...",
-            "Nenhuma notícia disponível.": "No news available.",
-            "Nenhum banner disponível.": "No banner available.",
-            "Leia mais": "Read more",
-            "Todos os direitos reservados.": "All rights reserved."
-        },
-        es: {
-            "Início": "Inicio",
-            "Notícias": "Noticias",
-            "Agenda": "Agenda",
-            "Loja": "Tienda",
-            "Clube": "Club",
-            "Carregando banners...": "Cargando banners...",
-            "Últimas Notícias": "Últimas Noticias",
-            "Carregando notícias...": "Cargando noticias...",
-            "Nenhuma notícia disponível.": "No hay noticias disponibles.",
-            "Nenhum banner disponível.": "No hay banners disponibles.",
-            "Leia mais": "Leer más",
-            "Todos os direitos reservados.": "Todos los derechos reservados."
-        },
-        fr: {
-            "Início": "Accueil",
-            "Notícias": "Actualités",
-            "Agenda": "Agenda",
-            "Loja": "Boutique",
-            "Clube": "Club",
-            "Carregando banners...": "Chargement des bannières...",
-            "Últimas Notícias": "Dernières nouvelles",
-            "Carregando notícias...": "Chargement des actualités...",
-            "Nenhuma notícia disponível.": "Aucune nouvelle disponible.",
-            "Nenhum banner disponível.": "Aucune bannière disponible.",
-            "Leia mais": "Lire la suite",
-            "Todos os direitos reservados.": "Tous droits réservés."
-        },
-        de: {
-            "Início": "Startseite",
-            "Notícias": "Nachrichten",
-            "Agenda": "Agenda",
-            "Loja": "Shop",
-            "Clube": "Verein",
-            "Carregando banners...": "Lade Banner...",
-            "Últimas Notícias": "Neueste Nachrichten",
-            "Carregando notícias...": "Lade Nachrichten...",
-            "Nenhuma notícia disponível.": "Keine Nachrichten verfügbar.",
-            "Nenhum banner disponível.": "Kein Banner verfügbar.",
-            "Leia mais": "Mehr lesen",
-            "Todos os direitos reservados.": "Alle Rechte vorbehalten."
-        }
-    };
-
-    function applyTranslation(lang) {
-        document.querySelectorAll("[data-translate]").forEach(element => {
-            const text = element.innerText.trim();
-            if (translations[lang] && translations[lang][text]) {
-                element.innerText = translations[lang][text];
-            }
-        });
-    }
-
     // 🔹 Garante que o idioma salvo seja aplicado em todas as páginas
     const savedLang = localStorage.getItem("selectedLanguage") || "pt";
     
     const languageDropdown = document.getElementById("language-dropdown");
+
     if (languageDropdown) {
         languageDropdown.value = savedLang;
+        
+        // 🔹 Não traduzir automaticamente na carga da página, aguardar a escolha do idioma
         languageDropdown.addEventListener("change", function () {
             const selectedLang = this.value;
             localStorage.setItem("selectedLanguage", selectedLang);
-            applyTranslation(selectedLang);
+            translatePage(selectedLang); // Chama a tradução após a seleção do idioma
         });
     }
 
-    // 🔹 Aplica a tradução automaticamente ao carregar cada página
-    applyTranslation(savedLang);
+    // 🔹 Traduzir somente após o usuário selecionar um idioma
+    // Não aplica tradução automática aqui, a tradução ocorrerá após a escolha do idioma.
 });
