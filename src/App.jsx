@@ -6,6 +6,9 @@ import Translate from "./components/Translate";
 import AdminLogo from "./pages/AdminLogo"; 
 import AdminBanners from "./pages/AdminBanners"; 
 
+// Definição da URL do backend
+const API_URL = "https://backendsafor.onrender.com"; // Altere se necessário
+
 // Componente Sidebar
 function Sidebar() {
   return (
@@ -66,8 +69,11 @@ export default function App() {
 
   // Buscar estado inicial da API no backend
   useEffect(() => {
-    fetch("/api-status")
-      .then((res) => res.json())
+    fetch(`${API_URL}/api-status`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Erro ao buscar status da API");
+        return res.json();
+      })
       .then((data) => setIsApiEnabled(data.apiEnabled))
       .catch((error) => console.error("Erro ao buscar status da API:", error));
   }, []);
@@ -77,7 +83,7 @@ export default function App() {
     const newState = !isApiEnabled;
     setIsApiEnabled(newState);
 
-    fetch("/toggle-api", {
+    fetch(`${API_URL}/toggle-api`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ enabled: newState }),
