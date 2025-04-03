@@ -23,6 +23,19 @@ app.get("/", (req, res) => {
 });
 
 // 📌 tradutor Abaixo
+// Rota para desativar a API
+app.post("/disable-api", (req, res) => {
+    isApiEnabled = false;
+    res.json({ message: "API desativada temporariamente" });
+});
+
+// Rota para ativar a API
+app.post("/enable-api", (req, res) => {
+    isApiEnabled = true;
+    res.json({ message: "API ativada" });
+});
+
+
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY; // Chave salva como variável de ambiente
 
 app.post("/traduzir", async (req, res) => {
