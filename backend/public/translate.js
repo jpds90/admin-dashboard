@@ -3,11 +3,6 @@ const backendUrl = "https://backendsafor.onrender.com/traduzir";
 async function translateText(text, targetLang) {
     console.log("🔄 Traduzindo:", text, "->", targetLang);
 
-    // Verifica se existe tradução local antes de chamar o backend
-    if (translations[targetLang] && translations[targetLang][text]) {
-        return translations[targetLang][text];
-    }
-
     try {
         const response = await fetch(backendUrl, {
             method: "POST",
@@ -20,12 +15,19 @@ async function translateText(text, targetLang) {
         }
 
         const data = await response.json();
+
+        // 🔍 Verifica se a API retornou a estrutura esperada
+        if (!data.translations || !Array.isArray(data.translations) || data.translations.length === 0) {
+            throw new Error("Resposta da API inválida: " + JSON.stringify(data));
+        }
+
         return data.translations[0].text;
     } catch (error) {
         console.error("❌ Erro ao traduzir:", error);
         return text; // Retorna o texto original se houver erro
     }
 }
+
 
 async function translatePage(targetLang) {
     console.log("🔄 Traduzindo página para:", targetLang);
