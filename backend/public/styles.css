@@ -183,24 +183,32 @@ nav ul li a:hover {
 
 .pagina-principal #banner-container {
     display: flex;
-    justify-content: center;
     overflow: hidden;
-    width: 993px;
+    width: 100%;
+    max-width: 993px;
     height: 558px;
     position: relative;
     margin: 0 auto;
 }
 
+.pagina-principal .carousel-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
 .pagina-principal .carousel-item {
     flex: 0 0 100%;
-    transition: transform 1s ease-in-out;
+    width: 100%;
+    height: 558px;
 }
 
 .pagina-principal .carousel-item img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
+
 
 .pagina-principal #noticias {
     padding: 20px;
