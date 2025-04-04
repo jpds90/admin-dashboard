@@ -363,18 +363,25 @@ app.get('/historia', async (req, res) => {
 });
 
 app.get('/historia/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await pool.query('SELECT * FROM saforgandia_historia WHERE id = $1', [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Historia não encontrada' }); // Retorna JSON, não HTML
+    const historiaId = req.params.id;
+
+    try {
+        const { rows } = await pool.query(
+            'SELECT * FROM saforgandia_historia WHERE id = $1',
+            [historiaId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'História não encontrada.' });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Erro ao buscar a história:', error);
+        res.status(500).json({ error: 'Erro ao buscar a história.' });
     }
-    res.json(result.rows[0]); // Certifique-se de sempre retornar JSON
-  } catch (error) {
-    console.error("Erro ao buscar Historia:", error);
-    res.status(500).json({ error: 'Erro ao buscar Historia' });
-  }
 });
+
 
 
 // 🚀 Criar uma nova notícia
