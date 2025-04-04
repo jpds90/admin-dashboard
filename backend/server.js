@@ -125,6 +125,35 @@ app.get('/noticias', async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar notícias' });
   }
 });
+app.delete('/noticias/:id', async (req, res) => {
+    const { id } = req.params;
+    const noticia = await db.query('DELETE FROM saforgandia_noticias WHERE id = $1 RETURNING *', [id]);
+
+    if (!noticia.rowCount) {
+        return res.status(404).json({ message: 'Notícia não encontrada' });
+    }
+
+    res.json({ message: 'Notícia deletada com sucesso' });
+});
+
+// Rota para remover imagem de uma noticias (caso precise)
+app.put("/noticias/:id/remover-imagem", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      "UPDATE saforgandia_noticias SET imagem_url = NULL WHERE id = $1 RETURNING *",
+      [id]
+    );
+    if (result.rowCount > 0) {
+      res.status(200).json({ message: "Imagem removida com sucesso!" });
+    } else {
+      res.status(404).json({ message: "Noticias não encontrada." });
+    }
+  } catch (error) {
+    console.error("Erro ao remover imagem:", error);
+    res.status(500).json({ message: "Erro ao remover imagem." });
+  }
+});
 
 app.get('/noticias/:id', async (req, res) => {
   const { id } = req.params;
