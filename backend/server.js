@@ -127,7 +127,7 @@ app.get('/noticias', async (req, res) => {
 });
 app.delete('/noticias/:id', async (req, res) => {
     const { id } = req.params;
-    const noticia = await db.query('DELETE FROM saforgandia_noticias WHERE id = $1 RETURNING *', [id]);
+    const noticia = await pool.query('DELETE FROM saforgandia_noticias WHERE id = $1 RETURNING *', [id]);
 
     if (!noticia.rowCount) {
         return res.status(404).json({ message: 'Notícia não encontrada' });
