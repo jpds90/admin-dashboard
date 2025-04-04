@@ -114,15 +114,23 @@ document.addEventListener("DOMContentLoaded", async function () {
 // 🔹 Função do carrossel
 function iniciarCarrossel() {
     let index = 0;
-    const banners = document.querySelectorAll(".carousel-item");
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("carousel-wrapper");
+
+    const bannerContainer = document.getElementById("banner-container");
+    const banners = bannerContainer.querySelectorAll(".carousel-item");
+
+    // Adiciona os itens dentro do wrapper
+    banners.forEach(banner => wrapper.appendChild(banner));
+    bannerContainer.innerHTML = "";
+    bannerContainer.appendChild(wrapper);
 
     setInterval(() => {
-        banners.forEach((banner, i) => {
-            banner.style.transform = `translateX(${(i - index) * 100}%)`;
-        });
         index = (index + 1) % banners.length;
+        wrapper.style.transform = `translateX(-${index * 100}%)`;
     }, 3000);
 }
+
 </script>
 
 <script src="translate.js"></script>
