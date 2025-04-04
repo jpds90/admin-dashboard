@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>historia - Safor Club de Fútbol Gandia</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="pagina-historia">
+
+<header>
+    <div class="logo-nav-container">
+        <div class="logo-container">
+            <img id="logo-img" src="images/logo.png" alt="Logo do Saforgandia FC" class="logo">
+        </div>
+        <nav>
+<ul>
+    <li><a href="principal.html" data-translate>Início</a></li>
+    <li><a href="principal.html#noticias" data-translate>Noticias</a></li>
+    <li><a href="#agenda" data-translate>Agenda</a></li>
+    <li><a href="#loja" data-translate>Loja</a></li>
+    <li><a href="clube.html" data-translate>Clube</a></li>
+</ul>
+
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div id="historia" class="historia">
+        <h2 data-translate>Carregando historia...</h2>
+    </div>
+    <a href="principal.html" class="voltar" data-translate>← Voltar</a>
+</div>
+
+<footer>
+    <p data-translate>&copy; 2025 Safor Club de Fútbol Gandia - Todos os direitos reservados.</p>
+</footer>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const historiaId = urlParams.get("id");
+
+    if (!historiaId) {
+        document.getElementById("historia").innerHTML = "<p data-translate>historia não encontrada.</p>";
+        return;
+    }
+
+    try {
+        const response = await fetch(`/historia/${historiaId}`);
+        const historia = await response.json();
+
+        if (!historia || historia.error) {
+            document.getElementById("historia").innerHTML = "<p data-translate>historia não encontrada.</p>";
+            return;
+        }
+
+        const imagemSrc = historia.imagem_large && historia.imagem_large.trim() !== "" 
+            ? historia.imagem_large 
+            : "path/to/default-image.jpg";
+
+        // Atualiza o conteúdo da historia
+        const historiaElement = document.getElementById("historia");
+        historiaElement.innerHTML = `
+            <img src="${imagemSrc}" alt="${historia.titulo}" class="historia-imagem">
+            <h2 data-translate>${historia.titulo}</h2>
+            <p data-translate>${historia.conteudo}</p>
+        `;
+
+        // Agora, traduza o conteúdo dinâmico após ele ser carregado
+        await translatePage(localStorage.getItem("selectedLanguage") || "pt");
+
+    } catch (error) {
+        console.error("Erro ao carregar historia:", error);
+        document.getElementById("historia").innerHTML = "<p data-translate>Erro ao carregar historia.</p>";
+    }
+
+    // Carregar Logo
+    try {
+        const logoResponse = await fetch("/api/logo");
+        const logoData = await logoResponse.json();
+
+        if (logoData.logo_url) {
+            document.getElementById("logo-img").src = logoData.logo_url;
+        }
+    } catch (error) {
+        console.error("Erro ao carregar a logo:", error);
+    }
+});
+
+</script>
+<script src="translate.js"></script>
+
+</body>
+</html>
