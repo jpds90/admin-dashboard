@@ -83,7 +83,49 @@ nav ul li a:hover {
     box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
 }
 
+/* ------------------------------------- */
+/* ESTILOS ESPECÍFICOS PARA historia.HTML */
+/* ------------------------------------- */
 
+
+.pagina-historia .container {
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pagina-historia .historia img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.pagina-historia .historia h2 {
+    font-size: 24px;
+    color: #333;
+}
+
+.pagina-historia .historia p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.pagina-historia .voltar {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #40c455;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.pagina-historia .voltar:hover {
+    background-color: #1d9902;
+}
 /* ------------------------------------- */
 /* ESTILOS ESPECÍFICOS PARA NOTICIA.HTML */
 /* ------------------------------------- */
@@ -157,7 +199,7 @@ nav ul li a:hover {
 .pagina-principal .carousel-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .pagina-principal #noticias {
